@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
 
         gameCamera = new OrthographicCamera();
         viewport = new FitViewport(Constants.V_WIDTH / Constants.PPM,
-            Constants.V_HEIGTH / Constants.PPM,gameCamera);
+            Constants.V_HEIGHT / Constants.PPM,gameCamera);
         mapLoader = new TmxMapLoader();
 
         manager.load("World/frog.png", Texture.class);
@@ -79,7 +79,24 @@ public class GameScreen implements Screen {
 
         world.step(1/60f,6,2);
 
+        float targetX = hero.getX() + hero.getWidth() / 2;
+
+        float startX = viewport.getWorldWidth()/2;
+        float endX = 8 - viewport.getWorldWidth()/2;
+
+        gameCamera.position.x = MathUtils.clamp(targetX,startX,endX);
+
+        float targetY = hero.getY() + hero.getHeight() / 2;
+
+        float startY = viewport.getWorldHeight()/2;
+        float endY = 8 - viewport.getWorldHeight()/2;
+
+        gameCamera.position.y = MathUtils.clamp(targetY,startY,endY);
+
+
         gameCamera.update();
+        hero.update(delta);
+
         ScreenUtils.clear(0,0,0,1);
 
         renderer.setView(gameCamera);

@@ -11,6 +11,10 @@ public class Constants {
     public static final short HERO_BIT = 8;
 
     public static final int V_WIDTH = 640;
-    public static final int V_HEIGTH = 360;
+    public static final int V_HEIGHT = 360;
+
+    //Hero
+    public static final float HERO_DRAW_OFFSET_X = 1.5f;
+    public static final float HERO_DEFAULT_SPEED = 76f;
 
 }
