@@ -2,7 +2,10 @@ package com.myname.game.utils;
 
 public class Constants {
 
+    public static final int GAME_SPRITE_SIZE = 16;
     public static final float PPM = 100f;
+    public static final float GAME_TILE_SIZE = GAME_SPRITE_SIZE/PPM;
+    public static final float CAMERA_ZOOM = 1.5f;
 
     public static final short NOTHING_BIT = 0;
     public static final short GROUND_BIT = 1;
@@ -15,6 +18,15 @@ public class Constants {
 
     //Hero
     public static final float HERO_DRAW_OFFSET_X = 1.5f;
-    public static final float HERO_DEFAULT_SPEED = 76f;
+    public static final float HERO_DEFAULT_SPEED = 100f;
+    public static final int HERO_IDLE_ANIMATION_WIDTH = 4;
+    public static final int HERO_IDLE_ANIMATION_HEIGHT = 3;
+    public static final float HERO_IDLE_ANIMATION_FRAME_DURATION = 0.2f;
+    public static final float HERO_IDLE_ANIMATION_OFFSET_X_Y = 5.0f;
+    public static final float HERO_HITBOX_RADIUS_OFFSET = 7.0f;
+    public static final float HERO_HITBOX_Y_OFFSET = 0.08f;
+
+    //Entities
+
 
 }

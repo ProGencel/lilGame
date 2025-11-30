@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
             Constants.V_HEIGHT / Constants.PPM,gameCamera);
         mapLoader = new TmxMapLoader();
 
-        manager.load("World/frog.png", Texture.class);
+        manager.load("Hero/idle.png", Texture.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
         manager.finishLoading();
@@ -71,7 +71,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        gameCamera.zoom = 1/Constants.CAMERA_ZOOM;
     }
 
     @Override
@@ -81,8 +81,8 @@ public class GameScreen implements Screen {
 
         float targetX = hero.getX() + hero.getWidth() / 2;
 
-        float startX = viewport.getWorldWidth()/2;
-        float endX = 8 - viewport.getWorldWidth()/2;
+        float startX = viewport.getWorldWidth()/Constants.CAMERA_ZOOM/2;
+        float endX = 8 - viewport.getWorldWidth()/Constants.CAMERA_ZOOM/2;
 
         gameCamera.position.x = MathUtils.clamp(targetX,startX,endX);
 
@@ -92,7 +92,6 @@ public class GameScreen implements Screen {
         float endY = 8 - viewport.getWorldHeight()/2;
 
         gameCamera.position.y = MathUtils.clamp(targetY,startY,endY);
-
 
         gameCamera.update();
         hero.update(delta);
@@ -109,7 +108,7 @@ public class GameScreen implements Screen {
 
         batch.end();
 
-        debugRenderer.render(world, gameCamera.combined);
+        //debugRenderer.render(world, gameCamera.combined);
 
     }
 
