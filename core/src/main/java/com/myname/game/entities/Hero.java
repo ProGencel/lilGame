@@ -3,6 +3,7 @@ package com.myname.game.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -16,40 +17,65 @@ public class Hero extends GameEntity {
 
     private Vector2 currentSpeed;
     private float speed = Constants.HERO_DEFAULT_SPEED/Constants.PPM;
-    private Animation<TextureRegion> idleAnimation;
-    private TextureRegion textureRegion;
+
+    private Texture idleTexture;
+    private Animation<TextureRegion> idleRightAnimation;
+    private Animation<TextureRegion> idleDownAnimation;
+    private Animation<TextureRegion> idleUpAnimation;
+
     private float stateTime;
+
+    String direction = "right";
+
 
     public Hero(World world,AssetManager manager)
     {
-        texture = manager.get("Hero/idle.png");
-        textureRegion = new TextureRegion(texture);
+        idleTexture = manager.get("Hero/idle.png");
         currentSpeed = new Vector2(0,0);
 
+        idleRightAnimation = animationHandler(idleTexture, 0, 1,
+            0, Constants.HERO_IDLE_ANIMATION_WIDTH, Constants.HERO_IDLE_ANIMATION_HEIGHT,
+            Constants.HERO_IDLE_ANIMATION_WIDTH, 4,Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
+
+        idleUpAnimation = animationHandler(idleTexture, 1, 2,
+            0, Constants.HERO_IDLE_ANIMATION_WIDTH, Constants.HERO_IDLE_ANIMATION_HEIGHT,
+            Constants.HERO_IDLE_ANIMATION_WIDTH, 4,Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
+
+        idleDownAnimation = animationHandler(idleTexture, 2, 3,
+            0, Constants.HERO_IDLE_ANIMATION_WIDTH, Constants.HERO_IDLE_ANIMATION_HEIGHT,
+            Constants.HERO_IDLE_ANIMATION_WIDTH, 4,Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
+
         setBounds(1,1,
-            (float) texture.getWidth() / Constants.HERO_IDLE_ANIMATION_WIDTH / Constants.PPM,
-            (float) texture.getHeight() / Constants.HERO_IDLE_ANIMATION_HEIGHT / Constants.PPM);
-        animationHandler();
+            (float) idleTexture.getWidth() / Constants.HERO_IDLE_ANIMATION_WIDTH / Constants.PPM,
+            (float) idleTexture.getHeight() / Constants.HERO_IDLE_ANIMATION_HEIGHT / Constants.PPM);
+
 
         defineHero(world);
     }
 
-    private void animationHandler()
+    private Animation<TextureRegion> animationHandler
+        (Texture texture, int firstRow, int lastRow, int firstCol, int lastCol,
+        int totalRow, int totalCol, int animationLength,float frameDuration)
     {
-        System.out.println(texture.getWidth());
         TextureRegion[][] partOfTextureRegion = TextureRegion.split(texture,
-            texture.getWidth()/Constants.HERO_IDLE_ANIMATION_WIDTH,
-            texture.getWidth()/Constants.HERO_IDLE_ANIMATION_HEIGHT);
+            texture.getWidth()/totalCol,
+            texture.getHeight()/totalRow);
 
-        TextureRegion[] idleAnimationParts = new TextureRegion[Constants.HERO_IDLE_ANIMATION_WIDTH];
-        for(int i = 0;i<Constants.HERO_IDLE_ANIMATION_WIDTH;i++)
+        TextureRegion[] AnimationParts = new TextureRegion[animationLength];
+
+        int index = 0;
+        for(int i = firstRow;i<lastRow;i++)
         {
-            idleAnimationParts[i] = partOfTextureRegion[0][i];
+            for(int j = firstCol;j<lastCol;j++)
+            {
+                AnimationParts[index++] = partOfTextureRegion[i][j];
+            }
         }
 
-        idleAnimation = new Animation<TextureRegion>(Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,
-            idleAnimationParts);
         stateTime = 0.0f;
+
+        return new Animation<TextureRegion>(frameDuration,
+        AnimationParts);
     }
 
     private void defineHero(World world)
@@ -84,7 +110,34 @@ public class Hero extends GameEntity {
     public void draw(float dt)
     {
         stateTime+=dt;
-        TextureRegion currentFrame = idleAnimation.getKeyFrame(stateTime,true);
+        TextureRegion currentFrame = null;
+
+        if(direction.equals("right"))
+        {
+            currentFrame = idleRightAnimation.getKeyFrame(stateTime,true);
+            if(currentFrame.isFlipX())
+            {
+                currentFrame.flip(true,false);
+            }
+        }
+        if(direction.equals("left"))
+        {
+            currentFrame = idleRightAnimation.getKeyFrame(stateTime,true);
+            if(!currentFrame.isFlipX())
+            {
+                currentFrame.flip(true,false);
+            }
+        }
+        if(direction.equals("up"))
+        {
+            currentFrame = idleUpAnimation.getKeyFrame(stateTime,true);
+        }
+        if(direction.equals("down"))
+        {
+            currentFrame = idleDownAnimation.getKeyFrame(stateTime,true);
+        }
+
+
         setRegion(currentFrame);
 
         float heroWidth = (float) currentFrame.getRegionWidth() / Constants.PPM;
@@ -104,18 +157,22 @@ public class Hero extends GameEntity {
         if(Gdx.input.isKeyPressed(Input.Keys.W))
         {
             currentSpeed.y = 1;
+            direction = "down";
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S))
         {
             currentSpeed.y = -1;
+            direction = "up";
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A))
         {
             currentSpeed.x = -1;
+            direction = "left";
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D))
         {
             currentSpeed.x = 1;
+            direction = "right";
         }
 
         if(currentSpeed.x != 0 || currentSpeed.y != 0)

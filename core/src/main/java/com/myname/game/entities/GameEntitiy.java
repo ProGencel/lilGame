@@ -1,6 +1,5 @@
 package com.myname.game.entities;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -14,7 +13,6 @@ abstract class GameEntity extends Sprite {
     protected BodyDef bodyDef;
     protected FixtureDef fixtureDef;
     protected Fixture fixture;
-    protected Texture texture;
 
     public abstract void update(float dt);
 
