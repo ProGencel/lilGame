@@ -55,6 +55,7 @@ public class GameScreen implements Screen {
         mapLoader = new TmxMapLoader();
 
         manager.load("Hero/idle.png", Texture.class);
+        manager.load("Hero/walk.png", Texture.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
         manager.finishLoading();
@@ -88,8 +89,8 @@ public class GameScreen implements Screen {
 
         float targetY = hero.getY() + hero.getHeight() / 2;
 
-        float startY = viewport.getWorldHeight()/2;
-        float endY = 8 - viewport.getWorldHeight()/2;
+        float startY = viewport.getWorldHeight()/Constants.CAMERA_ZOOM/2;
+        float endY = 8 - viewport.getWorldHeight()/Constants.CAMERA_ZOOM/2;
 
         gameCamera.position.y = MathUtils.clamp(targetY,startY,endY);
 
@@ -98,7 +99,14 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(0,0,0,1);
 
-        renderer.setView(gameCamera);
+        float width = viewport.getWorldWidth();
+        float height = viewport.getWorldHeight();
+
+        float x = gameCamera.position.x - (width/2) - 2;
+        float y = gameCamera.position.y - (height/2) - 2;
+
+        renderer.setView(gameCamera.combined,x,y,
+            width + 4,height+ 4);
         renderer.render();
         batch.setProjectionMatrix(gameCamera.combined);
 
