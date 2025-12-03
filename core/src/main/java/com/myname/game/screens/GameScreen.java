@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myname.game.entities.Hero;
+import com.myname.game.entities.Npc;
 import com.myname.game.tools.WorldObjectsCreator;
 import com.myname.game.utils.Constants;
 
@@ -44,6 +45,10 @@ public class GameScreen implements Screen {
 
     //Hero
     private Hero hero;
+    private Npc npc;
+
+    private int[] backgroundLayers;
+    private int[] foregroundLayers;
 
     public GameScreen(AssetManager manager)
     {
@@ -56,6 +61,8 @@ public class GameScreen implements Screen {
 
         manager.load("Hero/idle.png", Texture.class);
         manager.load("Hero/walk.png", Texture.class);
+        manager.load("Npc/Sword.png",Texture.class);
+        manager.load("Npc/idle.png",Texture.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
         manager.finishLoading();
@@ -68,6 +75,13 @@ public class GameScreen implements Screen {
         objectsCreator = new WorldObjectsCreator(world,map);
         batch = new SpriteBatch();
         hero = new Hero(world,manager);
+        npc = new Npc(world,manager);
+
+        int bottomLayerIndex = map.getLayers().getIndex("Under_Characters");
+        int upperLayerIndex = map.getLayers().getIndex("Upper_Characters");
+
+        backgroundLayers = new int[]{bottomLayerIndex};
+        foregroundLayers = new int[]{upperLayerIndex};
     }
 
     @Override
@@ -96,6 +110,7 @@ public class GameScreen implements Screen {
 
         gameCamera.update();
         hero.update(delta);
+        npc.update(delta);
 
         ScreenUtils.clear(0,0,0,1);
 
@@ -107,16 +122,19 @@ public class GameScreen implements Screen {
 
         renderer.setView(gameCamera.combined,x,y,
             width + 4,height+ 4);
-        renderer.render();
+        renderer.render(backgroundLayers);
         batch.setProjectionMatrix(gameCamera.combined);
 
         batch.begin();
 
+        npc.draw(batch);
         hero.draw(batch);
 
         batch.end();
 
-        //debugRenderer.render(world, gameCamera.combined);
+        renderer.render(foregroundLayers);
+
+        debugRenderer.render(world, gameCamera.combined);
 
     }
 

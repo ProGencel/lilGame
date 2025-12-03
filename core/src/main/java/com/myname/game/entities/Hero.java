@@ -32,6 +32,7 @@ public class Hero extends GameEntity {
     TextureRegion[][] partOfWalkTextureRegion;
 
     private float stateTime;
+    private Direction previousDirection;
 
     public Hero(World world,AssetManager manager)
     {
@@ -46,60 +47,38 @@ public class Hero extends GameEntity {
 
         idleRightAnimation = animationHandler(partOfIdleTextureRegion, 0, 1,
             0, Constants.HERO_IDLE_SPRITE_COL, Constants.HERO_IDLE_SPRITE_COL,
-            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
+            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,stateTime);
 
         idleDownAnimation = animationHandler(partOfIdleTextureRegion, 1, 2,
             0, Constants.HERO_IDLE_SPRITE_COL,Constants.HERO_IDLE_SPRITE_COL,
-            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
+            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,stateTime);
 
         idleUpAnimation = animationHandler(partOfIdleTextureRegion, 2, 3,
             0, Constants.HERO_IDLE_SPRITE_COL, Constants.HERO_IDLE_SPRITE_COL,
-            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
+            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,stateTime);
 
         int walkFrameWidth = walkTexture.getWidth() / Constants.HERO_WALK_SPRITE_COL;
-        int walkFrameHeight = walkTexture.getWidth() / Constants.HERO_WALK_SPRITE_COL;
+        int walkFrameHeight = walkTexture.getHeight() / Constants.HERO_WALK_SPRITE_ROW;
 
         partOfWalkTextureRegion = TextureRegion.split(walkTexture,walkFrameWidth,walkFrameHeight);
 
         walkRightAnimation = animationHandler(partOfWalkTextureRegion,0,1,
             0,Constants.HERO_WALK_SPRITE_COL,Constants.HERO_WALK_SPRITE_COL,
-            Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
+            Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
 
         walkDownAnimation = animationHandler(partOfWalkTextureRegion,1,2,
             0,Constants.HERO_WALK_SPRITE_COL,Constants.HERO_WALK_SPRITE_COL,
-            Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
+            Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
 
         walkUpAnimation = animationHandler(partOfWalkTextureRegion,2,3,
             0,Constants.HERO_WALK_SPRITE_COL,Constants.HERO_WALK_SPRITE_COL,
-            Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
+            Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
 
-        setBounds(1,1,
-            (float) idleTexture.getWidth() / Constants.HERO_IDLE_SPRITE_COL / Constants.PPM,
+        setSize((float) idleTexture.getWidth() / Constants.HERO_IDLE_SPRITE_COL / Constants.PPM,
             (float) idleTexture.getHeight() / Constants.HERO_IDLE_SPRITE_ROW / Constants.PPM);
 
 
         defineHero(world);
-    }
-
-    private Animation<TextureRegion> animationHandler
-        (TextureRegion[][] spriteParts, int firstRow, int lastRow, int firstCol, int lastCol,
-         int animationLength,float frameDuration)
-    {
-        TextureRegion[] AnimationParts = new TextureRegion[animationLength];
-
-        int index = 0;
-        for(int i = firstRow;i<lastRow;i++)
-        {
-            for(int j = firstCol;j<lastCol;j++)
-            {
-                AnimationParts[index++] = spriteParts[i][j];
-            }
-        }
-
-        stateTime = 0.0f;
-
-        return new Animation<TextureRegion>(frameDuration,
-        AnimationParts);
     }
 
     private void defineHero(World world)
@@ -115,6 +94,8 @@ public class Hero extends GameEntity {
 
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
+        fixtureDef.filter.categoryBits = Constants.HERO_BIT;
+        fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.NPC_BIT | Constants.NPC_SENSOR_BIT;
 
         fixture = body.createFixture(fixtureDef);
 
@@ -125,62 +106,44 @@ public class Hero extends GameEntity {
     @Override
     public void update(float dt) {
         inputHandler(dt);
-        draw(dt);
+        frameSetter(dt);
 
         setPosition(body.getPosition().x - getWidth() / 2,
             body.getPosition().y - getHeight() / 2 + Constants.HERO_HITBOX_Y_OFFSET);
+
     }
 
-    public void draw(float dt)
+    public void frameSetter(float dt)
     {
-        stateTime+=dt;
-        TextureRegion currentFrame = null;
-
-        switch (direction)
+        if(direction != previousDirection)
         {
-            case IDLE_RIGHT:
-                currentFrame = idleRightAnimation.getKeyFrame(stateTime,true);
-                if(currentFrame.isFlipX())
-                {
-                    currentFrame.flip(true,false);
-                }
-                break;
-            case IDLE_LEFT:
-                currentFrame = idleRightAnimation.getKeyFrame(stateTime,true);
-                if(!currentFrame.isFlipX())
-                {
-                    currentFrame.flip(true,false);
-                }
-                break;
-            case IDLE_UP:
-                currentFrame = idleUpAnimation.getKeyFrame(stateTime,true);
-                break;
-            case IDLE_DOWN:
-                currentFrame = idleDownAnimation.getKeyFrame(stateTime,true);
-                break;
-            case WALK_RIGHT:
-                currentFrame = walkRightAnimation.getKeyFrame(stateTime,true);
-                if(currentFrame.isFlipX())
-                {
-                    currentFrame.flip(true,false);
-                }
-                break;
-            case WALK_LEFT:
-                currentFrame = walkRightAnimation.getKeyFrame(stateTime,true);
-                if(!currentFrame.isFlipX())
-                {
-                    currentFrame.flip(true,false);
-                }
-                break;
-            case WALK_UP:
-                currentFrame = walkUpAnimation.getKeyFrame(stateTime,true);
-                break;
-            case WALK_DOWN:
-                currentFrame = walkDownAnimation.getKeyFrame(stateTime,true);
-                break;
+            stateTime = 0;
+            previousDirection = direction;
         }
+        stateTime+=dt;
+
+        TextureRegion currentFrame = switch (direction) {
+            case IDLE_RIGHT, IDLE_LEFT -> idleRightAnimation.getKeyFrame(stateTime, true);
+            case IDLE_UP -> idleUpAnimation.getKeyFrame(stateTime, true);
+            case IDLE_DOWN -> idleDownAnimation.getKeyFrame(stateTime, true);
+            case WALK_RIGHT, WALK_LEFT -> walkRightAnimation.getKeyFrame(stateTime, true);
+            case WALK_UP -> walkUpAnimation.getKeyFrame(stateTime, true);
+            case WALK_DOWN -> walkDownAnimation.getKeyFrame(stateTime, true);
+        };
 
         setRegion(currentFrame);
+
+        boolean isLeft = false;
+
+        if(direction.equals(Direction.IDLE_LEFT) || direction.equals(Direction.WALK_LEFT))
+        {
+            isLeft = true;
+        }
+
+        if(isLeft)
+        {
+            setFlip(true,false);
+        }
 
         float heroWidth = (float) currentFrame.getRegionWidth() / Constants.PPM;
         float heroHeight = (float) currentFrame.getRegionHeight() / Constants.PPM;
