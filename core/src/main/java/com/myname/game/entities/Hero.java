@@ -34,6 +34,8 @@ public class Hero extends GameEntity {
     private float stateTime;
     private Direction previousDirection;
 
+    public boolean isContactWithNpc = false;
+
     public Hero(World world,AssetManager manager)
     {
         idleTexture = manager.get("Hero/idle.png");
@@ -98,6 +100,7 @@ public class Hero extends GameEntity {
         fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.NPC_BIT | Constants.NPC_SENSOR_BIT;
 
         fixture = body.createFixture(fixtureDef);
+        fixture.setUserData(this);
 
         shape.dispose();
     }
@@ -158,6 +161,11 @@ public class Hero extends GameEntity {
     {
 
         currentSpeed.set(0,0);
+
+        if(isContactWithNpc && Gdx.input.isKeyJustPressed(Input.Keys.E))
+        {
+            System.out.println("naber");
+        }
 
         if(Gdx.input.isKeyPressed(Input.Keys.W))
         {

@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
+import com.myname.game.tools.ListenerClass;
 import com.myname.game.tools.WorldObjectsCreator;
 import com.myname.game.utils.Constants;
 
@@ -50,6 +51,8 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
     private int[] foregroundLayers;
 
+    private ListenerClass listenerClass;
+
     public GameScreen(AssetManager manager)
     {
         world = new World(new Vector2(0,0),true);
@@ -58,6 +61,8 @@ public class GameScreen implements Screen {
         viewport = new FitViewport(Constants.V_WIDTH / Constants.PPM,
             Constants.V_HEIGHT / Constants.PPM,gameCamera);
         mapLoader = new TmxMapLoader();
+        listenerClass = new ListenerClass();
+        world.setContactListener(listenerClass);
 
         manager.load("Hero/idle.png", Texture.class);
         manager.load("Hero/walk.png", Texture.class);

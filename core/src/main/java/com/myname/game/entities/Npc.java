@@ -72,6 +72,7 @@ public class Npc extends GameEntity{
         fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.HERO_BIT | Constants.WALL_BIT;
 
         fixture = body.createFixture(fixtureDef);
+        fixture.setUserData(this);
 
         /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
         //Up part is creating the physical body like we've done before
@@ -86,7 +87,8 @@ public class Npc extends GameEntity{
         fixtureDef.filter.categoryBits = Constants.NPC_SENSOR_BIT;
         fixtureDef.filter.maskBits = Constants.HERO_BIT;
 
-        body.createFixture(fixtureDef);
+        fixture = body.createFixture(fixtureDef);
+        fixture.setUserData(this);
 
         wifiShape.dispose();
         shape.dispose();
