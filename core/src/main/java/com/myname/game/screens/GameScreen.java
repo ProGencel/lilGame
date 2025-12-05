@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.myname.game.entities.GameEntity;
+import com.myname.game.entities.GameEntitiy;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
 import com.myname.game.scenes.Hud;
@@ -60,7 +60,7 @@ public class GameScreen implements Screen {
 
     private Hud hud;
 
-    private Array<GameEntity> renderQueue;
+    private Array<GameEntitiy> renderQueue;
 
     public GameScreen(AssetManager manager)
     {
@@ -86,12 +86,16 @@ public class GameScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map,1/Constants.PPM);
         debugRenderer = new Box2DDebugRenderer();
 
-        objectsCreator = new WorldObjectsCreator(world,map);
         batch = new SpriteBatch();
         hero = new Hero(world,manager);
         npc = new Npc(world,manager);
 
+        objectsCreator = new WorldObjectsCreator(world,map);
+
         renderQueue = new Array<>();
+
+        renderQueue.addAll(objectsCreator.createEnvironmentEntities(world,map));
+
         renderQueue.add(hero);
         renderQueue.add(npc);
 
@@ -102,6 +106,7 @@ public class GameScreen implements Screen {
 
         backgroundLayers = new int[]{bottomLayerIndex};
         foregroundLayers = new int[]{upperLayerIndex};
+
     }
 
     @Override
@@ -149,8 +154,10 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
-        npc.draw(batch);
-        hero.draw(batch);
+        for(GameEntitiy entity : renderQueue)
+        {
+            entity.draw(batch);
+        }
 
         batch.end();
 

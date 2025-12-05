@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.myname.game.utils.Constants;
 
-public class Hero extends GameEntity {
+public class Hero extends GameEntitiy {
 
     private Vector2 currentSpeed;
     private float speed = Constants.HERO_DEFAULT_SPEED/Constants.PPM;

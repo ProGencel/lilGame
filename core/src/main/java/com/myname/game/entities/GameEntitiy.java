@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 
-public abstract class GameEntity extends Sprite {
+public abstract class GameEntitiy extends Sprite {
 
     protected enum Direction
     {
@@ -29,7 +29,7 @@ public abstract class GameEntity extends Sprite {
 
     Direction direction = Direction.IDLE_RIGHT;
 
-    public GameEntity(World world)
+    public GameEntitiy(World world)
     {
         this.world = world;
     }

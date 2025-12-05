@@ -1,14 +1,18 @@
 package com.myname.game.tools;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.myname.game.entities.GameEntitiy;
+import com.myname.game.entities.StaticEntity;
 import com.myname.game.utils.Constants;
 
 
@@ -17,9 +21,38 @@ public class WorldObjectsCreator {
     MapLayer layer;
     BodyDef bodyDef;
 
+    public Array<GameEntitiy> createEnvironmentEntities(World world, TiledMap map)
+    {
+        Array<GameEntitiy> entities = new Array<>();
+
+        if(map.getLayers().get("Environment") == null)
+        {
+            return entities;
+        }
+
+        for(MapObject object : map.getLayers().get("Environment").getObjects())
+        {
+            if(object instanceof TiledMapTileMapObject)
+            {
+                TiledMapTileMapObject tileObject = (TiledMapTileMapObject) object;
+
+                TextureRegion region = tileObject.getTile().getTextureRegion();
+
+                float x = tileObject.getX();
+                float y = tileObject.getY();
+
+                StaticEntity entity = new StaticEntity(world,region,x,y);
+
+                entities.add(entity);
+            }
+        }
+
+        return entities;
+    }
+
     public WorldObjectsCreator(World world, TiledMap map)
     {
-        layer = map.getLayers().get("Collisions");
+        layer = map.getLayers().get("Environment");
         bodyDef = new BodyDef();
 
         //For rectangle hitboxes

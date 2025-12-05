@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.myname.game.utils.Constants;
 
 
-public class Npc extends GameEntity{
+public class Npc extends GameEntitiy {
 
     private Texture texture;
     private Animation<TextureRegion> idleAnimation;

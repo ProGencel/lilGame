@@ -3,15 +3,21 @@ package com.myname.game.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
+import com.myname.game.utils.Constants;
 
-public class StaticEntity extends GameEntity{
+public class StaticEntity extends GameEntitiy {
 
     private TextureRegion textureRegion;
 
-    public StaticEntity(World world, TextureRegion region, float x, float y, float width, float height)
+    public StaticEntity(World world, TextureRegion textureRegion, float x, float y)
     {
-        this.textureRegion = region;
-        setBounds(x,y,width,height);
+        super(world);
+        this.textureRegion = textureRegion;
+
+        float w = textureRegion.getRegionWidth() / Constants.PPM;
+        float h = textureRegion.getRegionHeight() / Constants.PPM;
+
+        setBounds(x / Constants.PPM, y / Constants.PPM,w,h);
     }
 
     @Override
