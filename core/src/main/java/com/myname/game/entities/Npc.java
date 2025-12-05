@@ -16,8 +16,9 @@ public class Npc extends GameEntity{
 
     float stateTime = 0;
 
-    public Npc(World world,AssetManager manager)
+    public Npc(World world, AssetManager manager)
     {
+        super(world);
         texture = manager.get("Npc/idle.png",Texture.class);
 
         int walkFrameWidth = texture.getWidth() / Constants.NPC_SPRITE_COL;
@@ -30,7 +31,7 @@ public class Npc extends GameEntity{
 
         setSize(walkFrameWidth / Constants.PPM, walkFrameHeight / Constants.PPM);
 
-        defineNpc(world);
+        defineNpc();
 
         setPosition(body.getPosition().x - (((float) walkFrameWidth / 2) / Constants.PPM),
             body.getPosition().y - (((float) walkFrameHeight / 2.5f) / Constants.PPM));
@@ -51,7 +52,7 @@ public class Npc extends GameEntity{
 
         frameSetter(dt);
     }
-    public void defineNpc(World world)
+    public void defineNpc()
     {
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;

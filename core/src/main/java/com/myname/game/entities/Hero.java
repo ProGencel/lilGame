@@ -38,6 +38,7 @@ public class Hero extends GameEntity {
 
     public Hero(World world,AssetManager manager)
     {
+        super(world);
         idleTexture = manager.get("Hero/idle.png");
         walkTexture = manager.get("Hero/walk.png");
         currentSpeed = new Vector2(0,0);
@@ -80,10 +81,10 @@ public class Hero extends GameEntity {
             (float) idleTexture.getHeight() / Constants.HERO_IDLE_SPRITE_ROW / Constants.PPM);
 
 
-        defineHero(world);
+        defineHero();
     }
 
-    private void defineHero(World world)
+    private void defineHero()
     {
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -162,10 +163,6 @@ public class Hero extends GameEntity {
 
         currentSpeed.set(0,0);
 
-        if(isContactWithNpc && Gdx.input.isKeyJustPressed(Input.Keys.E))
-        {
-            System.out.println("naber");
-        }
 
         if(Gdx.input.isKeyPressed(Input.Keys.W))
         {

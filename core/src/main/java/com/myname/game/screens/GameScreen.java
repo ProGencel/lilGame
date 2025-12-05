@@ -1,5 +1,7 @@
 package com.myname.game.screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,11 +14,14 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.myname.game.entities.GameEntity;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
+import com.myname.game.scenes.Hud;
 import com.myname.game.tools.ListenerClass;
 import com.myname.game.tools.WorldObjectsCreator;
 import com.myname.game.utils.Constants;
@@ -53,6 +58,10 @@ public class GameScreen implements Screen {
 
     private ListenerClass listenerClass;
 
+    private Hud hud;
+
+    private Array<GameEntity> renderQueue;
+
     public GameScreen(AssetManager manager)
     {
         world = new World(new Vector2(0,0),true);
@@ -81,6 +90,12 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         hero = new Hero(world,manager);
         npc = new Npc(world,manager);
+
+        renderQueue = new Array<>();
+        renderQueue.add(hero);
+        renderQueue.add(npc);
+
+        hud = new Hud(batch);
 
         int bottomLayerIndex = map.getLayers().getIndex("Under_Characters");
         int upperLayerIndex = map.getLayers().getIndex("Upper_Characters");
@@ -114,6 +129,7 @@ public class GameScreen implements Screen {
         gameCamera.position.y = MathUtils.clamp(targetY,startY,endY);
 
         gameCamera.update();
+        update();
         hero.update(delta);
         npc.update(delta);
 
@@ -127,8 +143,9 @@ public class GameScreen implements Screen {
 
         renderer.setView(gameCamera.combined,x,y,
             width + 4,height+ 4);
-        renderer.render(backgroundLayers);
         batch.setProjectionMatrix(gameCamera.combined);
+
+        renderer.render();
 
         batch.begin();
 
@@ -137,9 +154,35 @@ public class GameScreen implements Screen {
 
         batch.end();
 
-        renderer.render(foregroundLayers);
 
-        debugRenderer.render(world, gameCamera.combined);
+        //debugRenderer.render(world, gameCamera.combined);
+        hud.draw();
+
+    }
+
+    public void update()
+    {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        {
+            if(hero.isContactWithNpc)
+            {
+                if(!hud.isDialogVisible())
+                {
+                    hud.showDialog("Bu poseti al annen seni icine soksun");
+                }
+                else
+                {
+                    hud.hideDialog();
+                }
+            }
+        }
+        else
+        {
+            if(!hero.isContactWithNpc)
+            {
+                hud.hideDialog();
+            }
+        }
 
     }
 
