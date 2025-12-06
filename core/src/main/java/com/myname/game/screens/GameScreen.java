@@ -94,18 +94,13 @@ public class GameScreen implements Screen {
 
         renderQueue = new Array<>();
 
-        renderQueue.addAll(objectsCreator.createEnvironmentEntities(world,map));
+        renderQueue.addAll(objectsCreator.createEntities(world,map,"Environment"));
+        renderQueue.addAll(objectsCreator.createEntities(world,map,"UpperEnvironment"));
 
         renderQueue.add(hero);
         renderQueue.add(npc);
 
         hud = new Hud(batch);
-
-        int bottomLayerIndex = map.getLayers().getIndex("Under_Characters");
-        int upperLayerIndex = map.getLayers().getIndex("Upper_Characters");
-
-        backgroundLayers = new int[]{bottomLayerIndex};
-        foregroundLayers = new int[]{upperLayerIndex};
 
     }
 
@@ -162,7 +157,7 @@ public class GameScreen implements Screen {
         batch.end();
 
 
-        //debugRenderer.render(world, gameCamera.combined);
+        debugRenderer.render(world, gameCamera.combined);
         hud.draw();
 
     }

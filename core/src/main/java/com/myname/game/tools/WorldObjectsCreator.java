@@ -21,16 +21,43 @@ public class WorldObjectsCreator {
     MapLayer layer;
     BodyDef bodyDef;
 
-    public Array<GameEntitiy> createEnvironmentEntities(World world, TiledMap map)
+    public Array<GameEntitiy> createEntities(World world, TiledMap map, String layer)
     {
         Array<GameEntitiy> entities = new Array<>();
 
-        if(map.getLayers().get("Environment") == null)
+        if(map.getLayers().get(layer) == null)
         {
             return entities;
         }
 
-        for(MapObject object : map.getLayers().get("Environment").getObjects())
+        /*
+
+        Alttaki for dongumuzun aciklamasi soyledir:
+
+        MapObject olarak objeleri aliyoruz tek tek her biri icin once instanceof uyguluyoruz
+        yani siz TileMapTileMapObject misiniz yoksa defolun gidin.
+
+        Eger oylelerse aliyoruz degisle rectangle falan ise yolluyoruz evlerine geri.
+
+        (MapObject TiledMapTileObject RectangleMapObject vs o tarz siniflarin abstracidir)
+
+        TiledMapTileObject tmx den aliyoruz bakiyoruz eger resimli vs ise yani bizim oraya koydugumuz object
+        layerdaki sey resimli ise sadece kordinat kare poligon degil ise bu sinif oluyor.
+
+        Iste baktik bizim bu object TiledMapTileMapObject mi diye oyleyse tileObject olusturuyoruz cunku diyoruz
+        boyle olsunki onun ozellikleri kullanalim cast ediyoruz zaten abstrac oldugu icin sorun olmuyor.
+
+        Sonra TextureRegion ile resmini aliyoruz tileObject.getTile().getTextureRegion() diyerekten
+
+        ise x ve y kordinatini aliyoz
+
+        Sonra static entitiy olarak onun bilgileri ile objemizi yapip o entitiyde fonksiyonun basinda olusturdugumuz
+        GameEntitiy listesine koyuyoruz en sonda bu listeyi dondurucez zaten.
+        Bunlar bittikten sonra bu eklenmis oldu zaten sonra basa donuyoruz bir sonraki object icin basliyoruz islemlere
+
+         */
+
+        for(MapObject object : map.getLayers().get(layer).getObjects())
         {
             if(object instanceof TiledMapTileMapObject)
             {
@@ -41,7 +68,7 @@ public class WorldObjectsCreator {
                 float x = tileObject.getX();
                 float y = tileObject.getY();
 
-                StaticEntity entity = new StaticEntity(world,region,x,y);
+                StaticEntity entity = new StaticEntity(world,region,x,y,tileObject);
 
                 entities.add(entity);
             }
@@ -52,7 +79,7 @@ public class WorldObjectsCreator {
 
     public WorldObjectsCreator(World world, TiledMap map)
     {
-        layer = map.getLayers().get("Environment");
+        layer = map.getLayers().get("Collisions");
         bodyDef = new BodyDef();
 
         //For rectangle hitboxes
@@ -74,7 +101,7 @@ public class WorldObjectsCreator {
         }
 
         //For Polygon hitboxes
-        //For polygon, we connect different points so we dont need length
+        //For polygon, we connect different points so we don't need length
         for(PolylineMapObject obj : layer.getObjects().getByType(PolylineMapObject.class)) {
 
             Polyline line = obj.getPolyline();

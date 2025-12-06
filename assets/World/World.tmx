@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="477">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="478">
  <tileset firstgid="1" name="Grass" tilewidth="16" tileheight="16" tilecount="15" columns="5">
   <image source="summer.png" width="80" height="48"/>
  </tileset>
@@ -32,6 +32,16 @@
  </tileset>
  <tileset firstgid="684" name="Tree" tilewidth="16" tileheight="16" tilecount="32" columns="8">
   <image source="Tree.png" width="128" height="64"/>
+  <tile id="18">
+   <objectgroup draworder="index" id="3">
+    <object id="2" x="11" y="6" width="5" height="4"/>
+   </objectgroup>
+  </tile>
+  <tile id="19">
+   <objectgroup draworder="index" id="2">
+    <object id="5" x="0" y="5.99748" width="5" height="4"/>
+   </objectgroup>
+  </tile>
  </tileset>
  <tileset firstgid="716" name="BeyazCicek" tilewidth="16" tileheight="16" tilecount="4" columns="2">
   <image source="chamomile.png" width="32" height="32"/>
@@ -342,7 +352,7 @@
   <object id="448" gid="105" x="672" y="128" width="16" height="16"/>
   <object id="450" gid="104" x="655.98" y="127.993" width="16" height="16"/>
  </objectgroup>
- <objectgroup id="13" name="upperObjects">
+ <objectgroup id="13" name="UpperEnvironment">
   <object id="454" gid="835" x="688" y="160" width="16" height="16"/>
   <object id="455" gid="837" x="688" y="176" width="16" height="16"/>
   <object id="456" gid="836" x="624" y="160" width="16" height="16"/>
@@ -355,5 +365,10 @@
   <object id="465" gid="833" x="640" y="80" width="16" height="16"/>
   <object id="466" gid="833" x="736" y="128" width="16" height="16"/>
   <object id="467" gid="833" x="576" y="128" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="15" name="Collisions">
+  <object id="477" x="0" y="608">
+   <polyline points="0,0 800,0"/>
+  </object>
  </objectgroup>
 </map>
