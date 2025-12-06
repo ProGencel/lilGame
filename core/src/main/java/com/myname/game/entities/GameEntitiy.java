@@ -26,6 +26,7 @@ public abstract class GameEntitiy extends Sprite {
     protected FixtureDef fixtureDef;
     protected Fixture fixture;
     protected World world;
+    public float spriteY;
 
     Direction direction = Direction.IDLE_RIGHT;
 

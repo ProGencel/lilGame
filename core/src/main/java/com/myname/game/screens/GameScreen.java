@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -21,13 +22,17 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myname.game.entities.GameEntitiy;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
+import com.myname.game.entities.StaticEntity;
 import com.myname.game.scenes.Hud;
 import com.myname.game.tools.ListenerClass;
 import com.myname.game.tools.WorldObjectsCreator;
 import com.myname.game.utils.Constants;
 
+import java.util.Comparator;
+
 public class GameScreen implements Screen {
 
+    private com.badlogic.gdx.graphics.FPSLogger fpsLogger = new com.badlogic.gdx.graphics.FPSLogger();
     // Map Variables
     private TmxMapLoader mapLoader; //Reads the map from disk
     private TiledMap map; //Map int the memory (data) //TmxMapLoader attach the data this class
@@ -53,14 +58,45 @@ public class GameScreen implements Screen {
     private Hero hero;
     private Npc npc;
 
-    private int[] backgroundLayers;
-    private int[] foregroundLayers;
-
     private ListenerClass listenerClass;
 
     private Hud hud;
 
     private Array<GameEntitiy> renderQueue;
+
+    private Comparator<GameEntitiy> yAxisComparator = new Comparator<GameEntitiy>() {
+        @Override
+        public int compare(GameEntitiy o1, GameEntitiy o2) {        // Y si yuksek olani arkaya atacaz
+
+            float o1Y = o1.getY();
+            float o2Y = o2.getY();
+
+            String o1ClassName = o1.getClass().getSimpleName();
+            String o2ClassName = o2.getClass().getSimpleName();
+
+            switch (o1ClassName)
+            {
+                case "Hero", "Npc":
+                    o1Y += 32/Constants.PPM;
+                    break;
+                case "StaticEntity":
+                    o1Y = o1.spriteY;
+                    break;
+            }
+
+            switch (o2ClassName)
+            {
+                case "Hero", "Npc":
+                    o2Y += 32/Constants.PPM;
+                    break;
+                case "StaticEntity":
+                    o2Y = o2.spriteY;
+                    break;
+            }
+
+            return Float.compare(o2Y,o1Y);
+        }
+    };
 
     public GameScreen(AssetManager manager)
     {
@@ -94,11 +130,11 @@ public class GameScreen implements Screen {
 
         renderQueue = new Array<>();
 
-        renderQueue.addAll(objectsCreator.createEntities(world,map,"Environment"));
-        renderQueue.addAll(objectsCreator.createEntities(world,map,"UpperEnvironment"));
-
         renderQueue.add(hero);
         renderQueue.add(npc);
+
+        renderQueue.addAll(objectsCreator.createEntities(world,map,"Environment"));
+        renderQueue.addAll(objectsCreator.createEntities(world,map,"UpperEnvironment"));
 
         hud = new Hud(batch);
 
@@ -111,6 +147,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+        //fpsLogger.log();
 
         world.step(1/60f,6,2);
 
@@ -147,17 +185,19 @@ public class GameScreen implements Screen {
 
         renderer.render();
 
+        renderQueue.sort(yAxisComparator);
+
         batch.begin();
 
         for(GameEntitiy entity : renderQueue)
         {
             entity.draw(batch);
         }
-
+        renderQueue.sort(yAxisComparator);
         batch.end();
 
 
-        debugRenderer.render(world, gameCamera.combined);
+        //debugRenderer.render(world, gameCamera.combined);
         hud.draw();
 
     }

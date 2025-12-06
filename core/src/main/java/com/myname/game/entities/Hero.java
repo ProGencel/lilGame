@@ -16,7 +16,6 @@ import com.myname.game.utils.Constants;
 public class Hero extends GameEntitiy {
 
     private Vector2 currentSpeed;
-    private float speed = Constants.HERO_DEFAULT_SPEED/Constants.PPM;
 
     private Texture idleTexture;
     private Animation<TextureRegion> idleRightAnimation;
@@ -204,7 +203,7 @@ public class Hero extends GameEntitiy {
 
         if(currentSpeed.x != 0 || currentSpeed.y != 0)
         {
-            currentSpeed.nor().scl(speed);
+            currentSpeed.nor().scl(Constants.HERO_DEFAULT_SPEED);
         }
 
         body.setLinearVelocity(currentSpeed.x,currentSpeed.y);

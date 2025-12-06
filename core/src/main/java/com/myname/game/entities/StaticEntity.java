@@ -6,17 +6,17 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.myname.game.utils.Constants;
 
+
 public class StaticEntity extends GameEntitiy {
 
     private TextureRegion textureRegion;
 
-    public StaticEntity(World world, TextureRegion textureRegion, float x, float y,TiledMapTileMapObject mapObject)
+    public StaticEntity(World world, TextureRegion textureRegion,TiledMapTileMapObject mapObject)
     {
         super(world);
         this.textureRegion = textureRegion;
@@ -24,7 +24,21 @@ public class StaticEntity extends GameEntitiy {
         float w = textureRegion.getRegionWidth() / Constants.PPM;
         float h = textureRegion.getRegionHeight() / Constants.PPM;
 
-        setBounds(x / Constants.PPM, y / Constants.PPM,w,h);
+        float x = mapObject.getX() / Constants.PPM;
+        float y = mapObject.getY() / Constants.PPM;
+
+
+        setBounds(x,y,w,h);
+
+        if(mapObject.getTile().getProperties().containsKey("OFFSET_Y"))
+        {
+            spriteY = getY()+
+                mapObject.getTile().getProperties().get("OFFSET_Y", Float.class)/Constants.PPM;
+        }
+        else
+        {
+            spriteY = getY();
+        }
 
         defineStaticBody(mapObject);
     }

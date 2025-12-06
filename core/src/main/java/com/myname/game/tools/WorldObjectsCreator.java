@@ -59,16 +59,14 @@ public class WorldObjectsCreator {
 
         for(MapObject object : map.getLayers().get(layer).getObjects())
         {
+
             if(object instanceof TiledMapTileMapObject)
             {
                 TiledMapTileMapObject tileObject = (TiledMapTileMapObject) object;
 
                 TextureRegion region = tileObject.getTile().getTextureRegion();
 
-                float x = tileObject.getX();
-                float y = tileObject.getY();
-
-                StaticEntity entity = new StaticEntity(world,region,x,y,tileObject);
+                StaticEntity entity = new StaticEntity(world,region,tileObject);
 
                 entities.add(entity);
             }

@@ -20,7 +20,7 @@ public class Constants {
 
     //Hero
     public static final float HERO_DRAW_OFFSET_X = 1.5f;
-    public static final float HERO_DEFAULT_SPEED = 80f;
+    public static final float HERO_DEFAULT_SPEED = 0.5f;
     public static final float HERO_IDLE_ANIMATION_FRAME_DURATION = 0.2f;
     public static final float HERO_IDLE_ANIMATION_OFFSET_X_Y = 5.0f;
     public static final float HERO_HITBOX_RADIUS_OFFSET = 7.0f;
