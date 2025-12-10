@@ -1,49 +1,34 @@
 package com.myname.game.tools;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.myname.game.utils.Constants;
+import com.myname.game.interfaces.Interactable;
 import com.myname.game.entities.Hero;
-
-import javax.swing.plaf.metal.MetalIconFactory;
 
 public class ListenerClass implements ContactListener {
 
-    boolean isContactWithNpc = false;
 
     @Override
     public void beginContact(Contact contact) {
 
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
+
         if(fixA.getUserData() == null || fixB.getUserData() == null)
         {
             return;
         }
-        if(isNpcSensorContact(fixA,fixB))
+        //Hero nun degdigi objeyi heronun touched componenti olarak ayarliyoruz
+        if(fixA.getUserData() instanceof Hero || fixB.getUserData() instanceof Hero)
         {
-            Hero hero = null;
-            if(fixA.getUserData() instanceof Hero)
-            {
-                hero = (Hero) fixA.getUserData();
-            }
-            else
-            {
-                hero = (Hero) fixB.getUserData();
-            }
+            Hero hero = (fixA.getUserData() instanceof Hero) ? (Hero) fixA.getUserData() : (Hero) fixB.getUserData();
+            Object object = (fixA.getUserData() instanceof Hero) ? fixB.getUserData() : fixA.getUserData();
 
-            if(hero != null)
+            if(object instanceof Interactable)
             {
-                hero.isContactWithNpc = true;
+                hero.setTouchedComponent((Interactable) object);
             }
-
         }
 
-    }
-
-    private boolean isNpcSensorContact(Fixture a, Fixture b)
-    {
-        int def = a.getFilterData().categoryBits | b.getFilterData().categoryBits;
-        return def == (Constants.HERO_BIT | Constants.NPC_SENSOR_BIT);
     }
 
 
@@ -58,20 +43,17 @@ public class ListenerClass implements ContactListener {
             return;
         }
 
-        if(isNpcSensorContact(fixA,fixB))
+        if(fixA.getUserData() instanceof Hero || fixB.getUserData() instanceof Hero)
         {
-            Hero hero = null;
-            if(fixA.getUserData() instanceof Hero)
-            {
-                hero = (Hero) fixA.getUserData();
-            }
-            else
-            {
-                hero = (Hero) fixB.getUserData();
-            }
+            Hero hero = (fixA.getUserData() instanceof Hero) ? (Hero) fixA.getUserData() : (Hero) fixB.getUserData();
+            Object object = (fixA.getUserData() instanceof Hero) ? fixB.getUserData() : fixA.getUserData();
 
-            hero.isContactWithNpc = false;
+            if(object instanceof Interactable && hero.getTouchedComponent() == object)
+            {
+                hero.setTouchedComponent(null);
+            }
         }
+
 
     }
 

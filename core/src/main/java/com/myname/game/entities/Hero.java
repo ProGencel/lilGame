@@ -6,11 +6,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.myname.game.interfaces.Interactable;
+import com.myname.game.scenes.Hud;
 import com.myname.game.utils.Constants;
 
 public class Hero extends GameEntitiy {
@@ -33,9 +36,25 @@ public class Hero extends GameEntitiy {
     private float stateTime;
     private Direction previousDirection;
 
-    public boolean isContactWithNpc = false;
+    private Interactable touchedComponent;
 
-    public Hero(World world,AssetManager manager)
+    public Interactable getTouchedComponent() {
+        return touchedComponent;
+    }
+
+    public void setTouchedComponent(Interactable touchedComponent) {
+        this.touchedComponent = touchedComponent;
+    }
+
+    public void interactWithTouchedComponent(Hud hud)
+    {
+        if(touchedComponent != null)
+        {
+            touchedComponent.interact(hud);
+        }
+    }
+
+    public Hero(World world, AssetManager manager)
     {
         super(world);
         idleTexture = manager.get("Hero/idle.png");
@@ -49,15 +68,15 @@ public class Hero extends GameEntitiy {
 
         idleRightAnimation = animationHandler(partOfIdleTextureRegion, 0, 1,
             0, Constants.HERO_IDLE_SPRITE_COL, Constants.HERO_IDLE_SPRITE_COL,
-            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,stateTime);
+            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
 
         idleDownAnimation = animationHandler(partOfIdleTextureRegion, 1, 2,
             0, Constants.HERO_IDLE_SPRITE_COL,Constants.HERO_IDLE_SPRITE_COL,
-            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,stateTime);
+            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
 
         idleUpAnimation = animationHandler(partOfIdleTextureRegion, 2, 3,
             0, Constants.HERO_IDLE_SPRITE_COL, Constants.HERO_IDLE_SPRITE_COL,
-            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION,stateTime);
+            Constants.HERO_IDLE_ANIMATION_FRAME_DURATION);
 
         int walkFrameWidth = walkTexture.getWidth() / Constants.HERO_WALK_SPRITE_COL;
         int walkFrameHeight = walkTexture.getHeight() / Constants.HERO_WALK_SPRITE_ROW;
@@ -66,15 +85,15 @@ public class Hero extends GameEntitiy {
 
         walkRightAnimation = animationHandler(partOfWalkTextureRegion,0,1,
             0,Constants.HERO_WALK_SPRITE_COL,Constants.HERO_WALK_SPRITE_COL,
-            Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
+            Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
 
         walkDownAnimation = animationHandler(partOfWalkTextureRegion,1,2,
             0,Constants.HERO_WALK_SPRITE_COL,Constants.HERO_WALK_SPRITE_COL,
-            Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
+            Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
 
         walkUpAnimation = animationHandler(partOfWalkTextureRegion,2,3,
             0,Constants.HERO_WALK_SPRITE_COL,Constants.HERO_WALK_SPRITE_COL,
-            Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
+            Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
 
         setSize((float) idleTexture.getWidth() / Constants.HERO_IDLE_SPRITE_COL / Constants.PPM,
             (float) idleTexture.getHeight() / Constants.HERO_IDLE_SPRITE_ROW / Constants.PPM);
@@ -113,6 +132,11 @@ public class Hero extends GameEntitiy {
 
         setPosition(body.getPosition().x - getWidth() / 2,
             body.getPosition().y - getHeight() / 2 + Constants.HERO_HITBOX_Y_OFFSET);
+
+        float heroStartX = 0 - Constants.HERO_X_OFFSET_PIXELS/Constants.PPM;
+        float heroEndX = (Constants.MAP_WIDTH_IN_METERS - getWidth()) + Constants.HERO_X_OFFSET_PIXELS/Constants.PPM;
+
+        setX(MathUtils.clamp(getX(),heroStartX,heroEndX));
 
     }
 

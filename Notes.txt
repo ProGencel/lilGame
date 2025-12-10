@@ -1,0 +1,1 @@
+We see 6.25 tile in our world because 100 pixel = 1 meters and 1 tile = 16 pixel and some math we arrive that point

@@ -7,6 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
@@ -71,27 +72,22 @@ public class GameScreen implements Screen {
             float o1Y = o1.getY();
             float o2Y = o2.getY();
 
-            String o1ClassName = o1.getClass().getSimpleName();
-            String o2ClassName = o2.getClass().getSimpleName();
-
-            switch (o1ClassName)
+            if(o1 instanceof Hero || o1 instanceof Npc)
             {
-                case "Hero", "Npc":
-                    o1Y += 32/Constants.PPM;
-                    break;
-                case "StaticEntity":
-                    o1Y = o1.spriteY;
-                    break;
+                o1Y += 32/Constants.PPM;
+            }
+            else if(o1 instanceof StaticEntity)
+            {
+                o1Y = o1.spriteY;
             }
 
-            switch (o2ClassName)
+            if(o2 instanceof Hero || o2 instanceof Npc)
             {
-                case "Hero", "Npc":
-                    o2Y += 32/Constants.PPM;
-                    break;
-                case "StaticEntity":
-                    o2Y = o2.spriteY;
-                    break;
+                o2Y += 32/Constants.PPM;
+            }
+            else if(o2 instanceof StaticEntity)
+            {
+                o2Y = o2.spriteY;
             }
 
             return Float.compare(o2Y,o1Y);
@@ -118,6 +114,8 @@ public class GameScreen implements Screen {
         manager.finishLoading();
 
         map = manager.get("World/world.tmx");
+
+
 
         renderer = new OrthogonalTiledMapRenderer(map,1/Constants.PPM);
         debugRenderer = new Box2DDebugRenderer();
@@ -193,44 +191,36 @@ public class GameScreen implements Screen {
         {
             entity.draw(batch);
         }
-        renderQueue.sort(yAxisComparator);
         batch.end();
 
 
-        //debugRenderer.render(world, gameCamera.combined);
+        debugRenderer.render(world, gameCamera.combined);
         hud.draw();
 
     }
 
     public void update()
     {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        if(hero.getTouchedComponent() != null)
         {
-            if(hero.isContactWithNpc)
+            if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             {
-                if(!hud.isDialogVisible())
-                {
-                    hud.showDialog("Bu poseti al annen seni icine soksun");
-                }
-                else
-                {
-                    hud.hideDialog();
-                }
+                hero.interactWithTouchedComponent(hud);
             }
         }
         else
         {
-            if(!hero.isContactWithNpc)
+            if(hud.isDialogVisible())
             {
                 hud.hideDialog();
             }
         }
-
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width,height,true);//Last true is middle the camera
+        viewport.update(width, height,true); //Last true is middle the camera
+        hud.resize(width, height);
     }
 
     @Override

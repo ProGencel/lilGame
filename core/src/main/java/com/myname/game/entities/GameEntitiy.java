@@ -37,7 +37,7 @@ public abstract class GameEntitiy extends Sprite {
 
     protected Animation<TextureRegion> animationHandler
         (TextureRegion[][] spriteParts, int firstRow, int lastRow, int firstCol, int lastCol,
-         int animationLength,float frameDuration,float stateTime)
+         int animationLength,float frameDuration)
     {
         TextureRegion[] animationParts = new TextureRegion[animationLength];
 
@@ -50,7 +50,6 @@ public abstract class GameEntitiy extends Sprite {
             }
         }
 
-        stateTime = 0.0f;
 
         return new Animation<TextureRegion>(frameDuration,
             animationParts);

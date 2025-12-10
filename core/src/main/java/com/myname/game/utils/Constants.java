@@ -18,22 +18,27 @@ public class Constants {
     public static final int V_WIDTH = 640;
     public static final int V_HEIGHT = 360;
 
+    //Map props
+    public static final int MAP_HORIZONTAL_TILES = 50;
+    public static final int MAP_VERTICAL_TILES = 50;
+    public static final float MAP_WIDTH_IN_METERS = GAME_SPRITE_SIZE*MAP_HORIZONTAL_TILES/PPM;
+    public static final float MAP_HEIGHT_IN_METERS = GAME_SPRITE_SIZE*MAP_VERTICAL_TILES/PPM;
+
     //Hero
-    public static final float HERO_DRAW_OFFSET_X = 1.5f;
-    public static final float HERO_DEFAULT_SPEED = 0.5f;
+    public static final float HERO_DEFAULT_SPEED = 1f;
     public static final float HERO_IDLE_ANIMATION_FRAME_DURATION = 0.2f;
     public static final float HERO_IDLE_ANIMATION_OFFSET_X_Y = 5.0f;
     public static final float HERO_HITBOX_RADIUS_OFFSET = 7.0f;
     public static final float HERO_HITBOX_Y_OFFSET = 0.05f;
     public static final int HERO_IDLE_SPRITE_ROW = 3;
     public static final int HERO_IDLE_SPRITE_COL = 4;
+    public static final int HERO_X_OFFSET_PIXELS = 32 + 2;
 
     public static final int HERO_WALK_SPRITE_COL = 8;
     public static final int HERO_WALK_SPRITE_ROW = 3;
     public static final float HERO_WALK_ANIMATION_FRAME_DURATION = 0.2f;
 
     //NPC
-
     public static final int NPC_SPRITE_COL = 4;
     public static final int NPC_SPRITE_ROW = 1;
 

@@ -5,14 +5,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import com.myname.game.interfaces.Interactable;
+import com.myname.game.scenes.Hud;
 import com.myname.game.utils.Constants;
 
 
-public class Npc extends GameEntitiy {
+public class Npc extends GameEntitiy implements Interactable {
 
     private Texture texture;
     private Animation<TextureRegion> idleAnimation;
     private TextureRegion[][] partsOfIdleAnimation;
+
+    private String dialogText;
 
     float stateTime = 0;
 
@@ -20,6 +24,7 @@ public class Npc extends GameEntitiy {
     {
         super(world);
         texture = manager.get("Npc/idle.png",Texture.class);
+        this.dialogText = "Bu poseti al, annen seni icine soksun.";
 
         int walkFrameWidth = texture.getWidth() / Constants.NPC_SPRITE_COL;
         int walkFrameHeight = texture.getHeight() / Constants.NPC_SPRITE_ROW;
@@ -27,7 +32,7 @@ public class Npc extends GameEntitiy {
         partsOfIdleAnimation = TextureRegion.split(texture,walkFrameWidth,walkFrameHeight);
 
         idleAnimation = animationHandler(partsOfIdleAnimation,0,Constants.NPC_SPRITE_ROW,
-            0,Constants.NPC_SPRITE_COL,4,Constants.HERO_WALK_ANIMATION_FRAME_DURATION,stateTime);
+            0,Constants.NPC_SPRITE_COL,4,Constants.HERO_WALK_ANIMATION_FRAME_DURATION);
 
         setSize(walkFrameWidth / Constants.PPM, walkFrameHeight / Constants.PPM);
 
@@ -93,5 +98,17 @@ public class Npc extends GameEntitiy {
 
         wifiShape.dispose();
         shape.dispose();
+    }
+
+    @Override
+    public void interact(Hud hud) {
+        if(!hud.isDialogVisible())
+        {
+            hud.showDialog(dialogText);
+        }
+        else
+        {
+            hud.hideDialog();
+        }
     }
 }
