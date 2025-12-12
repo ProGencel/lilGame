@@ -51,6 +51,7 @@ public class Hero extends GameEntitiy {
         if(touchedComponent != null)
         {
             touchedComponent.interact(hud);
+
         }
     }
 

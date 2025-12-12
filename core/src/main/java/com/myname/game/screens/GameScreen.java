@@ -7,10 +7,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -24,6 +22,7 @@ import com.myname.game.entities.GameEntitiy;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
 import com.myname.game.entities.StaticEntity;
+import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
 import com.myname.game.tools.ListenerClass;
 import com.myname.game.tools.WorldObjectsCreator;
@@ -94,6 +93,10 @@ public class GameScreen implements Screen {
         }
     };
 
+    private int userPotatoCounter = 0;
+
+    private float dialogTimer = 1.0f;
+
     public GameScreen(AssetManager manager)
     {
         world = new World(new Vector2(0,0),true);
@@ -150,6 +153,18 @@ public class GameScreen implements Screen {
 
         world.step(1/60f,6,2);
 
+        for(GameEntitiy entity : renderQueue)
+        {
+            if(entity instanceof StaticEntity)
+            {
+                StaticEntity item = (StaticEntity) entity;
+                if(item.shouldBodyDestroy())
+                {
+                    item.destroyBody();
+                }
+            }
+        }
+
         float targetX = hero.getX() + hero.getWidth() / 2;
 
         float startX = viewport.getWorldWidth()/Constants.CAMERA_ZOOM/2;
@@ -165,7 +180,7 @@ public class GameScreen implements Screen {
         gameCamera.position.y = MathUtils.clamp(targetY,startY,endY);
 
         gameCamera.update();
-        update();
+        update(delta);
         hero.update(delta);
         npc.update(delta);
 
@@ -199,18 +214,42 @@ public class GameScreen implements Screen {
 
     }
 
-    public void update()
+    public void update(float dt)
     {
+
+        if(dialogTimer > 0)
+        {
+            dialogTimer -= dt;
+        }
+
         if(hero.getTouchedComponent() != null)
         {
             if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             {
+                Interactable touchedItem = hero.getTouchedComponent();
+                boolean isPotate = false;
+
+                if(touchedItem instanceof StaticEntity)
+                {
+                    StaticEntity entity = (StaticEntity) touchedItem;
+                    if(entity.getItemName().equals("patates"))
+                    {
+                        isPotate = true;
+                    }
+                    dialogTimer = 1.0f;
+                }
                 hero.interactWithTouchedComponent(hud);
+
+                if(isPotate)
+                {
+                    userPotatoCounter++;
+                    hud.showDialog("Patates bulundu ! "+userPotatoCounter+"/3");
+                }
             }
         }
         else
         {
-            if(hud.isDialogVisible())
+            if(hud.isDialogVisible() && dialogTimer <= 0)
             {
                 hud.hideDialog();
             }

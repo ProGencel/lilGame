@@ -4,5 +4,6 @@ import com.myname.game.scenes.Hud;
 
 public interface Interactable {
 
-    void interact(Hud hdu);
+    void interact(Hud hud);
+
 }

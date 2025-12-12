@@ -25,7 +25,7 @@ public class Constants {
     public static final float MAP_HEIGHT_IN_METERS = GAME_SPRITE_SIZE*MAP_VERTICAL_TILES/PPM;
 
     //Hero
-    public static final float HERO_DEFAULT_SPEED = 1f;
+    public static final float HERO_DEFAULT_SPEED = 0.8f;
     public static final float HERO_IDLE_ANIMATION_FRAME_DURATION = 0.2f;
     public static final float HERO_IDLE_ANIMATION_OFFSET_X_Y = 5.0f;
     public static final float HERO_HITBOX_RADIUS_OFFSET = 7.0f;

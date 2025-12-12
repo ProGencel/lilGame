@@ -6,20 +6,35 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
+import com.myname.game.interfaces.Interactable;
+import com.myname.game.scenes.Hud;
 import com.myname.game.utils.Constants;
 
 
-public class StaticEntity extends GameEntitiy {
+public class StaticEntity extends GameEntitiy implements Interactable {
 
     private TextureRegion textureRegion;
+
+    private boolean isCollectible = false;
+    private String objectName = "";
+    private boolean collected = false;
+
+    private boolean destroyBody = false;
 
     public StaticEntity(World world, TextureRegion textureRegion,TiledMapTileMapObject mapObject)
     {
         super(world);
         this.textureRegion = textureRegion;
+
+        if(mapObject.getTile().getProperties().containsKey("collectible"))
+        {
+            this.isCollectible = mapObject.getTile().getProperties().get("collectible",Boolean.class);
+        }
+        if(mapObject.getTile().getProperties().containsKey("name"))
+        {
+            this.objectName = mapObject.getTile().getProperties().get("name", String.class);
+        }
 
         float w = textureRegion.getRegionWidth() / Constants.PPM;
         float h = textureRegion.getRegionHeight() / Constants.PPM;
@@ -63,7 +78,11 @@ public class StaticEntity extends GameEntitiy {
                 PolygonShape shape = new PolygonShape();
                 shape.setAsBox((rec.width/2) / Constants.PPM,(rec.height/2) / Constants.PPM);
 
-                body.createFixture(shape,1.0f);
+                FixtureDef fdef = new FixtureDef();
+                fdef.shape = shape;
+
+                Fixture fixture = body.createFixture(fdef);
+                fixture.setUserData(this);
 
                 shape.dispose();
             }
@@ -77,6 +96,50 @@ public class StaticEntity extends GameEntitiy {
 
     public void draw(SpriteBatch batch)
     {
-        batch.draw(textureRegion,getX(),getY(),getWidth(),getHeight());
+        if(!collected)
+        {
+            batch.draw(textureRegion,getX(),getY(),getWidth(),getHeight());
+        }
+    }
+
+    public void destroyBody()
+    {
+        if(body != null)
+        {
+            world.destroyBody(body);
+            body = null;
+            destroyBody = false;
+        }
+    }
+
+    public boolean shouldBodyDestroy()
+    {
+        return destroyBody;
+    }
+
+    @Override
+    public void interact(Hud hud) {
+        if(isCollectible && !collected)
+        {
+            collected = true;
+            hud.showDialog("Cebe bi tane "+objectName+" attım");
+
+            destroyBody = true;
+
+        }
+        else if(!isCollectible)
+        {
+            hud.showDialog("Bunu toplayamam");
+        }
+    }
+
+    public boolean isCollected()
+    {
+        return collected;
+    }
+
+    public String getItemName()
+    {
+        return objectName;
     }
 }

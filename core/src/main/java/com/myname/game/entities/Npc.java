@@ -16,7 +16,8 @@ public class Npc extends GameEntitiy implements Interactable {
     private Animation<TextureRegion> idleAnimation;
     private TextureRegion[][] partsOfIdleAnimation;
 
-    private String dialogText;
+    private String firstDialogText;
+    private String lessThanThreeText;
 
     float stateTime = 0;
 
@@ -24,7 +25,8 @@ public class Npc extends GameEntitiy implements Interactable {
     {
         super(world);
         texture = manager.get("Npc/idle.png",Texture.class);
-        this.dialogText = "Bu poseti al, annen seni icine soksun.";
+        this.firstDialogText = "Bu poseti al, annen seni icine soksun.";
+        this.lessThanThreeText = "Bu patatesler bana yetmez :(";
 
         int walkFrameWidth = texture.getWidth() / Constants.NPC_SPRITE_COL;
         int walkFrameHeight = texture.getHeight() / Constants.NPC_SPRITE_ROW;
@@ -104,7 +106,7 @@ public class Npc extends GameEntitiy implements Interactable {
     public void interact(Hud hud) {
         if(!hud.isDialogVisible())
         {
-            hud.showDialog(dialogText);
+            hud.showDialog(firstDialogText);
         }
         else
         {
