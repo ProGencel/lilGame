@@ -6,4 +6,5 @@ public interface Interactable {
 
     void interact(Hud hud);
 
+    void interact(Hud hud, String text);
 }

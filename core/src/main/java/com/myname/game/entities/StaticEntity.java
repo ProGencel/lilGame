@@ -119,6 +119,10 @@ public class StaticEntity extends GameEntitiy implements Interactable {
 
     @Override
     public void interact(Hud hud) {
+    }
+
+    @Override
+    public void interact(Hud hud, String text) {
         if(isCollectible && !collected)
         {
             collected = true;

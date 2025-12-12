@@ -64,6 +64,10 @@ public class GameScreen implements Screen {
 
     private Array<GameEntitiy> renderQueue;
 
+    private String firstDialogText;
+    private String lessThanThreeText;
+    private String finalNpcText;
+
     private Comparator<GameEntitiy> yAxisComparator = new Comparator<GameEntitiy>() {
         @Override
         public int compare(GameEntitiy o1, GameEntitiy o2) {        // Y si yuksek olani arkaya atacaz
@@ -100,6 +104,10 @@ public class GameScreen implements Screen {
     public GameScreen(AssetManager manager)
     {
         world = new World(new Vector2(0,0),true);
+
+        this.firstDialogText = "Bu poseti al, annen seni icine soksun.";
+        this.lessThanThreeText = "Bu kadarı bana yetmez :(";
+        this.finalNpcText = "Teşekkürler bu patatesler harika !";
 
         gameCamera = new OrthographicCamera();
         viewport = new FitViewport(Constants.V_WIDTH / Constants.PPM,
@@ -238,7 +246,19 @@ public class GameScreen implements Screen {
                     }
                     dialogTimer = 1.0f;
                 }
-                hero.interactWithTouchedComponent(hud);
+
+                if(userPotatoCounter == 0)
+                {
+                    hero.interactWithTouchedComponent(hud,firstDialogText);
+                }
+                else if(userPotatoCounter < 3)
+                {
+                    hero.interactWithTouchedComponent(hud,lessThanThreeText);
+                }
+                else if(userPotatoCounter == 3)
+                {
+                    hero.interactWithTouchedComponent(hud,finalNpcText);
+                }
 
                 if(isPotate)
                 {

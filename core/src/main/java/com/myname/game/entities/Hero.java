@@ -38,6 +38,7 @@ public class Hero extends GameEntitiy {
 
     private Interactable touchedComponent;
 
+
     public Interactable getTouchedComponent() {
         return touchedComponent;
     }
@@ -46,12 +47,11 @@ public class Hero extends GameEntitiy {
         this.touchedComponent = touchedComponent;
     }
 
-    public void interactWithTouchedComponent(Hud hud)
+    public void interactWithTouchedComponent(Hud hud,String text)
     {
         if(touchedComponent != null)
         {
-            touchedComponent.interact(hud);
-
+            touchedComponent.interact(hud,text);
         }
     }
 
