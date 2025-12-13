@@ -68,6 +68,8 @@ public class GameScreen implements Screen {
     private String lessThanThreeText;
     private String finalNpcText;
 
+    private float acculumator;
+
     private Comparator<GameEntitiy> yAxisComparator = new Comparator<GameEntitiy>() {
         @Override
         public int compare(GameEntitiy o1, GameEntitiy o2) {        // Y si yuksek olani arkaya atacaz
@@ -159,7 +161,12 @@ public class GameScreen implements Screen {
 
         //fpsLogger.log();
 
-        world.step(1/60f,6,2);
+        acculumator += Math.min(delta,0.25f);
+        while(acculumator > 1/60f)
+        {
+            world.step(1/60f,6,2);
+            acculumator -= 1/60f;
+        }
 
         for(GameEntitiy entity : renderQueue)
         {
@@ -172,6 +179,10 @@ public class GameScreen implements Screen {
                 }
             }
         }
+
+        update(delta);
+        hero.update(delta);
+        npc.update(delta);
 
         float targetX = hero.getX() + hero.getWidth() / 2;
 
@@ -188,9 +199,6 @@ public class GameScreen implements Screen {
         gameCamera.position.y = MathUtils.clamp(targetY,startY,endY);
 
         gameCamera.update();
-        update(delta);
-        hero.update(delta);
-        npc.update(delta);
 
         ScreenUtils.clear(0,0,0,1);
 
