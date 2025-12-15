@@ -125,10 +125,22 @@ public class StaticEntity extends GameEntitiy implements Interactable {
     public void interact(Hud hud, String text) {
         if(isCollectible && !collected)
         {
-            collected = true;
-            hud.showDialog("Cebe bi tane "+objectName+" attım");
+            switch (getItemName()) {
+                case "patates" -> {
+                    collected = true;
+                    hud.showDialog("Cebe bi tane " + objectName + " attım");
 
-            destroyBody = true;
+                    destroyBody = true;
+                }
+                case "frog" -> {
+                    collected = true;
+                    hud.showDialog("Oo bu kurbağa güzelmiş belki hanımefendi corbasına bunu katar");
+
+                    destroyBody = true;
+                }
+                case "sword" ->
+                    hud.showDialog("Çok güzel bir kılıç ama 16x16 olmadığı için kullanamıyorum :(\nÇok büyük....");
+            }
 
         }
         else if(!isCollectible)

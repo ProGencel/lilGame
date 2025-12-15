@@ -67,8 +67,16 @@ public class GameScreen implements Screen {
     private String firstDialogText;
     private String lessThanThreeText;
     private String finalNpcText;
+    private String afterTwoText;
+    private String frogTakenText;
 
     private float acculumator;
+
+    private int userPotatoCounter = 0;
+    private boolean isFrogTaken = false;
+
+    private float dialogTimer = 1.5f;
+
 
     private Comparator<GameEntitiy> yAxisComparator = new Comparator<GameEntitiy>() {
         @Override
@@ -98,18 +106,15 @@ public class GameScreen implements Screen {
             return Float.compare(o2Y,o1Y);
         }
     };
-
-    private int userPotatoCounter = 0;
-
-    private float dialogTimer = 1.0f;
-
     public GameScreen(AssetManager manager)
     {
         world = new World(new Vector2(0,0),true);
 
-        this.firstDialogText = "Bu poseti al, annen seni icine soksun.";
-        this.lessThanThreeText = "Bu kadarı bana yetmez :(";
+        this.firstDialogText = "Bana üç tane patates toplar mısın ?";//Bu poseti al, annen seni icine soksun.
+        this.lessThanThreeText = "Bu kadar patates bana yetmez :(";
         this.finalNpcText = "Teşekkürler bu patatesler harika !";
+        this.afterTwoText = "Sahile yakın bir yerde patates gördüğümü hatırlıyorum";
+        this.frogTakenText = "Iyyy bu nee !! hemen götür bunu burdan !!\n(Kurbağayı atmak için R ye bas)";
 
         gameCamera = new OrthographicCamera();
         viewport = new FitViewport(Constants.V_WIDTH / Constants.PPM,
@@ -120,7 +125,6 @@ public class GameScreen implements Screen {
 
         manager.load("Hero/idle.png", Texture.class);
         manager.load("Hero/walk.png", Texture.class);
-        manager.load("Npc/Sword.png",Texture.class);
         manager.load("Npc/idle.png",Texture.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
@@ -225,7 +229,7 @@ public class GameScreen implements Screen {
         batch.end();
 
 
-        debugRenderer.render(world, gameCamera.combined);
+        //debugRenderer.render(world, gameCamera.combined);
         hud.draw();
 
     }
@@ -244,20 +248,39 @@ public class GameScreen implements Screen {
             {
                 Interactable touchedItem = hero.getTouchedComponent();
                 boolean isPotate = false;
+                boolean isFrog = false;
+
 
                 if(touchedItem instanceof StaticEntity)
                 {
                     StaticEntity entity = (StaticEntity) touchedItem;
-                    if(entity.getItemName().equals("patates"))
+                    if(entity.getItemName().equals("frog"))
+                    {
+                        isFrog = true;
+                        isFrogTaken = true;
+                    }
+                    else if(entity.getItemName().equals("patates"))
                     {
                         isPotate = true;
                     }
-                    dialogTimer = 1.0f;
+                    else if(entity.getItemName().equals("sword"))
+                    {
+                        hero.interactWithTouchedComponent(hud,"Keşke 16x16 yapılmış bir kılıç olsaydı o zaman belki kullanabilirdim...");
+                    }
+                    dialogTimer = 1.5f;
                 }
 
-                if(userPotatoCounter == 0)
+                if(isFrogTaken)
+                {
+                    hero.interactWithTouchedComponent(hud,frogTakenText);
+                }
+                else if(userPotatoCounter == 0)
                 {
                     hero.interactWithTouchedComponent(hud,firstDialogText);
+                }
+                else if(userPotatoCounter == 2)
+                {
+                    hero.interactWithTouchedComponent(hud,afterTwoText);
                 }
                 else if(userPotatoCounter < 3)
                 {
@@ -281,6 +304,12 @@ public class GameScreen implements Screen {
             {
                 hud.hideDialog();
             }
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.R) && isFrogTaken)
+        {
+            hud.showDialog("Kurbağa uzaklara atıldı....");
+            isFrogTaken = false;
+            dialogTimer = 2f;
         }
     }
 
