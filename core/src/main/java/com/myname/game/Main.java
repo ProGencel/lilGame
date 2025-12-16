@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.myname.game.screens.GameScreen;
+import com.myname.game.screens.LoginScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
@@ -16,6 +17,6 @@ public class Main extends Game {
     @Override
     public void create() {
         manager = new AssetManager();
-        setScreen(new GameScreen(manager));
+        setScreen(new LoginScreen(this,manager));
     }
 }

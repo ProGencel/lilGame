@@ -18,6 +18,8 @@ public class Constants {
     public static final int V_WIDTH = 640;
     public static final int V_HEIGHT = 360;
 
+    public static final float CREDIT_SCROLL_SPEED = 0.1f;
+
     //Map props
     public static final int MAP_HORIZONTAL_TILES = 50;
     public static final int MAP_VERTICAL_TILES = 50;
