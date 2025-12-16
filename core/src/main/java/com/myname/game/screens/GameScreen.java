@@ -229,7 +229,7 @@ public class GameScreen implements Screen {
         batch.end();
 
 
-        //debugRenderer.render(world, gameCamera.combined);
+        debugRenderer.render(world, gameCamera.combined);
         hud.draw();
 
     }

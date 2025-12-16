@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
@@ -60,6 +61,13 @@ public class StaticEntity extends GameEntitiy implements Interactable {
 
     public void defineStaticBody(TiledMapTileMapObject tiledObject)
     {
+
+        bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(tiledObject.getX() / Constants.PPM, tiledObject.getY() / Constants.PPM);
+
+        body = world.createBody(bodyDef);
+
         for(MapObject object : tiledObject.getTile().getObjects())
         {
             if(object instanceof RectangleMapObject)
@@ -68,15 +76,14 @@ public class StaticEntity extends GameEntitiy implements Interactable {
 
                 Rectangle rec = recObject.getRectangle();
 
-                bodyDef = new BodyDef();
-                bodyDef.type = BodyDef.BodyType.StaticBody;
-                bodyDef.position.x = (tiledObject.getX() + rec.x + rec.width/2) / Constants.PPM;
-                bodyDef.position.y = (tiledObject.getY() + rec.y + rec.height/2) / Constants.PPM;
+                float hx = (rec.width / 2) / Constants.PPM;
+                float hy = (rec.height / 2) / Constants.PPM;
 
-                body = world.createBody(bodyDef);
+                float centerX = (rec.x / Constants.PPM) + hx;
+                float centerY = (rec.y / Constants.PPM) + hy;
 
                 PolygonShape shape = new PolygonShape();
-                shape.setAsBox((rec.width/2) / Constants.PPM,(rec.height/2) / Constants.PPM);
+                shape.setAsBox(hx,hy,new Vector2(centerX,centerY), 0);
 
                 FixtureDef fdef = new FixtureDef();
                 fdef.shape = shape;
