@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myname.game.entities.GameEntitiy;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
+import com.myname.game.entities.Dog;
 import com.myname.game.entities.StaticEntity;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
@@ -54,9 +55,10 @@ public class GameScreen implements Screen {
     //Brush
     private SpriteBatch batch;
 
-    //Hero
+    //Entities
     private Hero hero;
     private Npc npc;
+    private Dog dog;
 
     private ListenerClass listenerClass;
 
@@ -126,13 +128,12 @@ public class GameScreen implements Screen {
         manager.load("Hero/idle.png", Texture.class);
         manager.load("Hero/walk.png", Texture.class);
         manager.load("Npc/idle.png",Texture.class);
+        manager.load("Dog/dog.png",Texture.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
         manager.finishLoading();
 
         map = manager.get("World/world.tmx");
-
-
 
         renderer = new OrthogonalTiledMapRenderer(map,1/Constants.PPM);
         debugRenderer = new Box2DDebugRenderer();
@@ -149,7 +150,7 @@ public class GameScreen implements Screen {
         renderQueue.add(npc);
 
         renderQueue.addAll(objectsCreator.createEntities(world,map,"Environment"));
-        renderQueue.addAll(objectsCreator.createEntities(world,map,"UpperEnvironment"));
+        renderQueue.addAll(objectsCreator.createDogs(map,world,manager));
 
         hud = new Hud(batch);
 
@@ -181,6 +182,11 @@ public class GameScreen implements Screen {
                 {
                     item.destroyBody();
                 }
+            }
+            else if(entity instanceof Dog)
+            {
+                Dog dog = (Dog) entity;
+                dog.update(delta);
             }
         }
 
@@ -229,7 +235,7 @@ public class GameScreen implements Screen {
         batch.end();
 
 
-        debugRenderer.render(world, gameCamera.combined);
+        //debugRenderer.render(world, gameCamera.combined);
         hud.draw();
 
     }
@@ -248,7 +254,6 @@ public class GameScreen implements Screen {
             {
                 Interactable touchedItem = hero.getTouchedComponent();
                 boolean isPotate = false;
-                boolean isFrog = false;
 
 
                 if(touchedItem instanceof StaticEntity)
@@ -256,7 +261,6 @@ public class GameScreen implements Screen {
                     StaticEntity entity = (StaticEntity) touchedItem;
                     if(entity.getItemName().equals("frog"))
                     {
-                        isFrog = true;
                         isFrogTaken = true;
                     }
                     else if(entity.getItemName().equals("patates"))
@@ -289,6 +293,10 @@ public class GameScreen implements Screen {
                 else if(userPotatoCounter == 3)
                 {
                     hero.interactWithTouchedComponent(hud,finalNpcText);
+                }
+                else
+                {
+                    hero.interactWithTouchedComponent(hud,"merjhaba");
                 }
 
                 if(isPotate)

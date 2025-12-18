@@ -80,7 +80,7 @@ public class Npc extends GameEntitiy implements Interactable {
         /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
         //Up part is creating the physical body like we've done before
 
-        //Down part is something new we create a wifi like area for sensing things
+        //Down part is something new we create a Wi-Fi like area for sensing things
         /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
         CircleShape wifiShape = new CircleShape();

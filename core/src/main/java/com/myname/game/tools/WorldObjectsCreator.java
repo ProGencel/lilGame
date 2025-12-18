@@ -1,5 +1,6 @@
 package com.myname.game.tools;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.myname.game.entities.Dog;
 import com.myname.game.entities.GameEntitiy;
 import com.myname.game.entities.StaticEntity;
 import com.myname.game.utils.Constants;
@@ -18,8 +20,30 @@ import com.myname.game.utils.Constants;
 
 public class WorldObjectsCreator {
 
-    MapLayer layer;
-    BodyDef bodyDef;
+    private MapLayer layer;
+    private BodyDef bodyDef;
+
+    public Array<GameEntitiy> createDogs(TiledMap map, World world, AssetManager manager)
+    {
+        Array<GameEntitiy> dogs = new Array<>();
+
+        layer = map.getLayers().get("Dog");
+
+        for(MapObject mapObject : layer.getObjects())
+        {
+            if(mapObject instanceof TiledMapTileMapObject)
+            {
+                TiledMapTileMapObject tiledMapTileMapObject = (TiledMapTileMapObject) mapObject;
+
+                Dog dog = new Dog(world,manager,tiledMapTileMapObject);
+
+                dogs.add(dog);
+
+            }
+        }
+
+        return dogs;
+    }
 
     public Array<GameEntitiy> createEntities(World world, TiledMap map, String layer)
     {

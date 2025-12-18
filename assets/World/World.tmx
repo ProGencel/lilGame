@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="1229">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="1240">
  <tileset firstgid="1" name="Sand" tilewidth="16" tileheight="16" tilecount="15" columns="5">
   <image source="sand.png" width="80" height="48"/>
  </tileset>
@@ -211,6 +211,14 @@
    </objectgroup>
   </tile>
  </tileset>
+ <tileset firstgid="734" name="dog" tilewidth="16" tileheight="16" tilecount="1" columns="1">
+  <image source="../Dog/dog.png" width="16" height="16"/>
+  <tile id="0" type="dog">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="6" y="8" width="6" height="6"/>
+   </objectgroup>
+  </tile>
+ </tileset>
  <layer id="1" name="Ground" width="50" height="50">
   <data encoding="csv">
 145,130,130,145,140,140,141,144,133,132,132,143,145,144,130,144,128,143,140,145,140,143,128,130,131,132,142,140,128,142,140,128,143,141,132,131,132,144,129,143,132,141,144,145,140,130,130,143,133,131,
@@ -322,9 +330,18 @@
   <object id="1225" gid="732" x="700.667" y="109.667" width="64" height="64"/>
   <object id="1228" gid="733" x="384" y="176" width="32" height="32"/>
  </objectgroup>
+ <objectgroup id="16" name="Dog">
+  <object id="1236" gid="2147484382" x="128" y="48" width="16" height="16"/>
+ </objectgroup>
  <objectgroup id="15" name="Collisions">
   <object id="477" x="0" y="608">
    <polyline points="0,0 800,0"/>
+  </object>
+  <object id="1235" x="0" y="0">
+   <polyline points="0,0 800,0"/>
+  </object>
+  <object id="1239" x="800" y="800">
+   <polyline points="0,0 0,-800"/>
   </object>
  </objectgroup>
 </map>

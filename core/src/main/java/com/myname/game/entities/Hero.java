@@ -18,7 +18,7 @@ import com.myname.game.utils.Constants;
 
 public class Hero extends GameEntitiy {
 
-    private Vector2 currentSpeed;
+    public Vector2 currentSpeed;
 
     private Texture idleTexture;
     private Animation<TextureRegion> idleRightAnimation;
@@ -45,6 +45,12 @@ public class Hero extends GameEntitiy {
 
     public void setTouchedComponent(Interactable touchedComponent) {
         this.touchedComponent = touchedComponent;
+
+        if(touchedComponent instanceof Dog)
+        {
+            Dog dog = (Dog) touchedComponent;
+            dog.setTouchedComponent(this);
+        }
     }
 
     public void interactWithTouchedComponent(Hud hud,String text)
@@ -117,7 +123,7 @@ public class Hero extends GameEntitiy {
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.filter.categoryBits = Constants.HERO_BIT;
-        fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.NPC_BIT | Constants.NPC_SENSOR_BIT;
+        //fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.NPC_BIT | Constants.NPC_SENSOR_BIT;
 
         fixture = body.createFixture(fixtureDef);
         fixture.setUserData(this);

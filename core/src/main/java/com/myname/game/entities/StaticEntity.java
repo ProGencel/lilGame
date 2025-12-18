@@ -101,6 +101,7 @@ public class StaticEntity extends GameEntitiy implements Interactable {
 
     }
 
+    @Override
     public void draw(SpriteBatch batch)
     {
         if(!collected)
