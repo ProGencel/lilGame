@@ -34,9 +34,12 @@ public class Dog extends GameEntitiy implements Interactable {
         bodyDef.position.y = tileObject.getY() / Constants.PPM;
 
         body = world.createBody(bodyDef);
+        body.setLinearDamping(50f);
+        body.setAngularDamping(50f);
 
         for(MapObject object : tileObject.getTile().getObjects())
         {
+            //Hitboxlari icin
             if(object instanceof RectangleMapObject)
             {
                 RectangleMapObject rectangleMapObject = (RectangleMapObject) object;
@@ -118,8 +121,14 @@ public class Dog extends GameEntitiy implements Interactable {
         {
             if(!isTame)
             {
+                body.setLinearDamping(0f);
+                body.setAngularDamping(0f);
                 hud.showDialog("Hav hav sahip !");
                 isTame = true;
+            }
+            else
+            {
+                hud.showDialog("**şımarır**");
             }
         }
 

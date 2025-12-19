@@ -273,6 +273,10 @@ public class GameScreen implements Screen {
                     }
                     dialogTimer = 1.5f;
                 }
+                else if(touchedItem instanceof Dog)
+                {
+                    dialogTimer = 2f;
+                }
 
                 if(isFrogTaken)
                 {
