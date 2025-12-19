@@ -1,5 +1,7 @@
 package com.myname.game.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,7 +20,6 @@ public class Dog extends GameEntitiy implements Interactable {
 
     private TextureRegion textureRegion;
     private Texture texture;
-    private GameEntitiy touchedEntity;
     private Hero hero;
 
     private boolean isTame = false;
@@ -63,11 +64,6 @@ public class Dog extends GameEntitiy implements Interactable {
 
     public void setTouchedComponent(GameEntitiy touchedEntity)
     {
-         if(!isTame)
-         {
-             isTame = true;
-         }
-         this.touchedEntity = touchedEntity;
          if(touchedEntity instanceof Hero)
          {
              hero = (Hero) touchedEntity;
@@ -92,7 +88,20 @@ public class Dog extends GameEntitiy implements Interactable {
 
         if(isTame)
         {
-            body.setLinearVelocity(hero.currentSpeed.x,hero.currentSpeed.y);
+            Vector2 heroPos = new Vector2(hero.body.getPosition().x,
+                hero.body.getPosition().y);
+
+            Vector2 direction = heroPos.cpy().sub(body.getPosition());
+
+            if(direction.len() > Constants.DOG_FOLLLOW_LEN)
+            {
+                direction.nor();
+                body.setLinearVelocity(direction.scl(Constants.DOG_SPEED,Constants.DOG_SPEED));
+            }
+            else
+            {
+                body.setLinearVelocity(0,0);
+            }
         }
 
         setPosition(body.getPosition().x,body.getPosition().y);
@@ -104,5 +113,15 @@ public class Dog extends GameEntitiy implements Interactable {
 
     @Override
     public void interact(Hud hud, String text) {
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        {
+            if(!isTame)
+            {
+                hud.showDialog("Hav hav sahip !");
+                isTame = true;
+            }
+        }
+
     }
 }

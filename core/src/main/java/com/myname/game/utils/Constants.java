@@ -35,6 +35,11 @@ public class Constants {
     public static final int HERO_IDLE_SPRITE_ROW = 3;
     public static final int HERO_IDLE_SPRITE_COL = 4;
     public static final int HERO_X_OFFSET_PIXELS = 32 + 2;
+    public static final int HERO_Y_OFFSET_PIXELS = 32 + 1;
+
+    //Dog
+    public static final float DOG_SPEED = HERO_DEFAULT_SPEED * 0.95f;
+    public static final float DOG_FOLLLOW_LEN = 0.19f;
 
     public static final int HERO_WALK_SPRITE_COL = 8;
     public static final int HERO_WALK_SPRITE_ROW = 3;
