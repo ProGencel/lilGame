@@ -129,6 +129,7 @@ public class GameScreen implements Screen {
         manager.load("Hero/walk.png", Texture.class);
         manager.load("Npc/idle.png",Texture.class);
         manager.load("Dog/dog.png",Texture.class);
+        manager.load("Dog/dogWalk.png",Texture.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
         manager.finishLoading();

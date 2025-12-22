@@ -28,6 +28,14 @@ public class Dog extends GameEntitiy implements Interactable {
     private TextureRegion[][] partOfIdleAnimation;
     private TextureRegion currentFrame;
 
+    private Texture dogWalkAnimation;
+    private TextureRegion[][] partofWalkAnimation;
+    private Animation<TextureRegion> dogWalkRightAnimation;
+    private Animation<TextureRegion> dogWalkUpAnimation;
+    private Animation<TextureRegion> dogWalkDownAnimation;
+
+    private Direction previousDirection;
+
     private boolean isTame = false;
     float stateTime = 0;
 
@@ -84,11 +92,11 @@ public class Dog extends GameEntitiy implements Interactable {
     public Dog(World world, AssetManager manager, MapObject mapObject) {
         super(world);
         dogIdleAnimation = manager.get("Dog/dog.png");
+        dogWalkAnimation = manager.get("Dog/dog.png");
 
         direction = Direction.IDLE_RIGHT;
         defineDog(mapObject);
         setAnimationSprites();
-        setRegion(currentFrame);
     }
 
     public void setAnimationSprites()
@@ -99,11 +107,23 @@ public class Dog extends GameEntitiy implements Interactable {
         dogIdleUpAnimation = animationHandler(partOfIdleAnimation,1,2,0,3,4,0.3f);
         dogIdleDownAnimation = animationHandler(partOfIdleAnimation,2,3,0,3,4,0.3f);
 
-        currentFrame = dogIdleRightAnimation.getKeyFrame(0,true);
+
+        partofWalkAnimation = TextureRegion.split(dogWalkAnimation,16,16);
+
+        dogWalkRightAnimation = animationHandler(partofWalkAnimation,0,1,0,3,4,0.3f);
+        dogWalkUpAnimation = animationHandler(partofWalkAnimation,1,2,0,3,4,0.3f);
+        dogWalkDownAnimation = animationHandler(partofWalkAnimation,2,3,0,3,4,0.3f);
     }
 
     public void animationFrameSetter(float dt)
     {
+
+        if(previousDirection != direction)
+        {
+            stateTime = 0;
+            previousDirection = direction;
+        }
+
         stateTime += dt;
 
         switch (direction)
@@ -111,7 +131,9 @@ public class Dog extends GameEntitiy implements Interactable {
             case IDLE_UP -> currentFrame = dogIdleUpAnimation.getKeyFrame(stateTime, true);
             case IDLE_DOWN -> currentFrame = dogIdleDownAnimation.getKeyFrame(stateTime, true);
             case IDLE_RIGHT, IDLE_LEFT -> currentFrame = dogIdleRightAnimation.getKeyFrame(stateTime, true);
-            //default -> currentFrame = dogIdleRightAnimation.getKeyFrame(stateTime, true);
+            case WALK_UP -> currentFrame = dogWalkUpAnimation.getKeyFrame(stateTime,true);
+            case WALK_DOWN -> currentFrame = dogWalkDownAnimation.getKeyFrame(stateTime,true);
+            case WALK_RIGHT -> currentFrame = dogWalkRightAnimation.getKeyFrame(stateTime,true);
         }
 
         if(currentFrame != null)
