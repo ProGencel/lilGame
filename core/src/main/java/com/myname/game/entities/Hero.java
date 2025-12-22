@@ -123,7 +123,6 @@ public class Hero extends GameEntitiy {
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.filter.categoryBits = Constants.HERO_BIT;
-        //fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.NPC_BIT | Constants.NPC_SENSOR_BIT;
 
         fixture = body.createFixture(fixtureDef);
         fixture.setUserData(this);
@@ -144,7 +143,6 @@ public class Hero extends GameEntitiy {
         float heroEndX = (Constants.MAP_WIDTH_IN_METERS - getWidth()) + Constants.HERO_X_OFFSET_PIXELS/Constants.PPM;
 
         setX(MathUtils.clamp(getX(),heroStartX,heroEndX));
-
     }
 
     public void frameSetter(float dt)
@@ -167,14 +165,7 @@ public class Hero extends GameEntitiy {
 
         setRegion(currentFrame);
 
-        boolean isLeft = false;
-
         if(direction.equals(Direction.IDLE_LEFT) || direction.equals(Direction.WALK_LEFT))
-        {
-            isLeft = true;
-        }
-
-        if(isLeft)
         {
             setFlip(true,false);
         }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -18,11 +18,18 @@ import com.myname.game.utils.Constants;
 
 public class Dog extends GameEntitiy implements Interactable {
 
-    private TextureRegion textureRegion;
-    private Texture texture;
+    private Texture dogIdleAnimation;
     private Hero hero;
 
+    private Animation<TextureRegion> dogIdleRightAnimation;
+    private Animation<TextureRegion> dogIdleUpAnimation;
+    private Animation<TextureRegion> dogIdleDownAnimation;
+
+    private TextureRegion[][] partOfIdleAnimation;
+    private TextureRegion currentFrame;
+
     private boolean isTame = false;
+    float stateTime = 0;
 
     public void defineDog(MapObject mapObject)
     {
@@ -62,7 +69,8 @@ public class Dog extends GameEntitiy implements Interactable {
         }
 
         setPosition(tileObject.getX() / Constants.PPM, tileObject.getY() / Constants.PPM);
-        setSize(textureRegion.getRegionWidth() / Constants.PPM, textureRegion.getRegionHeight() / Constants.PPM);
+        setSize((float) dogIdleAnimation.getWidth() / 4 / Constants.PPM,
+            (float) dogIdleAnimation.getHeight() / 3 / Constants.PPM);
     }
 
     public void setTouchedComponent(GameEntitiy touchedEntity)
@@ -73,24 +81,53 @@ public class Dog extends GameEntitiy implements Interactable {
          }
     }
 
-    @Override
-    public void draw(SpriteBatch batch)
-    {
-        batch.draw(textureRegion,getX(),getY(),getWidth(),getHeight());
-    }
-
     public Dog(World world, AssetManager manager, MapObject mapObject) {
         super(world);
-        this.texture = manager.get("Dog/dog.png");
-        this.textureRegion = new TextureRegion(texture);
+        dogIdleAnimation = manager.get("Dog/dog.png");
+
+        direction = Direction.IDLE_RIGHT;
         defineDog(mapObject);
+        setAnimationSprites();
+        setRegion(currentFrame);
+    }
+
+    public void setAnimationSprites()
+    {
+        partOfIdleAnimation = TextureRegion.split(dogIdleAnimation,16,16);
+
+        dogIdleRightAnimation = animationHandler(partOfIdleAnimation,0,1,0,3,4,0.3f);
+        dogIdleUpAnimation = animationHandler(partOfIdleAnimation,1,2,0,3,4,0.3f);
+        dogIdleDownAnimation = animationHandler(partOfIdleAnimation,2,3,0,3,4,0.3f);
+
+        currentFrame = dogIdleRightAnimation.getKeyFrame(0,true);
+    }
+
+    public void animationFrameSetter(float dt)
+    {
+        stateTime += dt;
+
+        switch (direction)
+        {
+            case IDLE_UP -> currentFrame = dogIdleUpAnimation.getKeyFrame(stateTime, true);
+            case IDLE_DOWN -> currentFrame = dogIdleDownAnimation.getKeyFrame(stateTime, true);
+            case IDLE_RIGHT, IDLE_LEFT -> currentFrame = dogIdleRightAnimation.getKeyFrame(stateTime, true);
+            //default -> currentFrame = dogIdleRightAnimation.getKeyFrame(stateTime, true);
+        }
+
+        if(currentFrame != null)
+        {
+            setRegion(currentFrame);
+        }
     }
 
     @Override
     public void update(float dt) {
 
+        animationFrameSetter(dt);
+
         if(isTame)
         {
+            direction = hero.direction;
             Vector2 heroPos = new Vector2(hero.body.getPosition().x,
                 hero.body.getPosition().y);
 
@@ -105,6 +142,11 @@ public class Dog extends GameEntitiy implements Interactable {
             {
                 body.setLinearVelocity(0,0);
             }
+        }
+
+        if(direction.equals(Direction.IDLE_LEFT))
+        {
+            setFlip(true,false);
         }
 
         setPosition(body.getPosition().x,body.getPosition().y);
