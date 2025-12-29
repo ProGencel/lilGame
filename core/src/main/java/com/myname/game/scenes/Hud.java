@@ -4,6 +4,7 @@ package com.myname.game.scenes;
 //UI works with pixel not meters
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,14 +12,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.myname.game.Main;
+import com.myname.game.screens.GameScreen;
+import com.myname.game.screens.LoginScreen;
 import com.myname.game.utils.Constants;
 
 public class Hud {
@@ -31,15 +38,22 @@ public class Hud {
     private Skin skin;
     private Table dialogTable;
     private Label dialogLable;
+    private Table gameOverTable;
+    private AssetManager manager;
 
-    public Hud(SpriteBatch batch)
+    private Main main;
+    public Hud(SpriteBatch batch, Main main, AssetManager manager)
     {
+        this.main = main;
+        this.manager = manager;
+
         viewport = new FitViewport(Constants.V_WIDTH,Constants.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
         //Gdx.input.setInputProcessor(stage);   buton tiklamalari icin lazim !!!
 
         createBasicSkin();
         createDialogBox();
+        createGameOverBox();
     }
 
     public void draw()
@@ -50,6 +64,50 @@ public class Hud {
         //Stage did its own draw
         stage.act();
         stage.draw();
+    }
+
+    public void createGameOverBox()
+    {
+        gameOverTable = new Table();
+        gameOverTable.setFillParent(true);
+        gameOverTable.setVisible(false);
+
+        TextureRegionDrawable background = new TextureRegionDrawable(skin.getRegion("white"));
+        gameOverTable.setBackground(background.tint(new Color(0,0,0,0.6f)));
+
+        Label gameOverLabel = new Label("OYUN BITTI",skin);
+        gameOverLabel.setFontScale(2.0f);
+
+        TextButton retryButton = new TextButton("TEKRAR OYNA",skin);
+        TextButton quitButton = new TextButton("ANA MENU",skin);
+
+        gameOverTable.add(gameOverLabel).padBottom(50).row();
+        gameOverTable.add(retryButton).width(200).height(50).padBottom(10).row();
+        gameOverTable.add(quitButton).width(200).height(50);
+
+        retryButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x ,float y)
+            {
+                main.setScreen(new GameScreen(manager,main));
+            }
+        });
+
+        quitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                main.setScreen(new LoginScreen(main,manager));
+            }
+        });
+
+        stage.addActor(gameOverTable);
+
+    }
+
+    public void showGameOver()
+    {
+        gameOverTable.setVisible(true);
+        Gdx.input.setInputProcessor(stage);
     }
 
     public void showDialog(String text)
@@ -114,6 +172,13 @@ public class Hud {
         labelStyle.font = skin.getFont("default-font");
         labelStyle.fontColor = Color.WHITE;
         skin.add("default", labelStyle);
+
+        com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle textButtonStyle = new com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle();
+        textButtonStyle.font = skin.getFont("default-font");
+        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.BLACK);
+        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+        skin.add("default", textButtonStyle);
     }
 
     private void createDialogBox()

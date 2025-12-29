@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.myname.game.Main;
 import com.myname.game.entities.GameEntitiy;
 import com.myname.game.entities.Hero;
 import com.myname.game.entities.Npc;
@@ -78,7 +79,14 @@ public class GameScreen implements Screen {
     private boolean isFrogTaken = false;
 
     private float dialogTimer = 1.5f;
+    private Main main;
 
+    public enum GameState
+    {
+        RUNNING,GAME_OVER
+    }
+
+    private GameState gameState;
 
     private Comparator<GameEntitiy> yAxisComparator = new Comparator<GameEntitiy>() {
         @Override
@@ -108,11 +116,14 @@ public class GameScreen implements Screen {
             return Float.compare(o2Y,o1Y);
         }
     };
-    public GameScreen(AssetManager manager)
+    public GameScreen(AssetManager manager, Main main)
     {
+        this.main = main;
+        gameState = GameState.RUNNING;
+
         world = new World(new Vector2(0,0),true);
 
-        this.firstDialogText = "Bana üç tane patates toplar mısın ?";//Bu poseti al, annen seni icine soksun.
+        this.firstDialogText = "Bana üç tane patates toplar mısın?\nÇok güzel bir çorba yapacağımda !";//Bu poseti al, annen seni icine soksun.
         this.lessThanThreeText = "Bu kadar patates bana yetmez :(";
         this.finalNpcText = "Teşekkürler bu patatesler harika !";
         this.afterTwoText = "Sahile yakın bir yerde patates gördüğümü hatırlıyorum";
@@ -153,7 +164,7 @@ public class GameScreen implements Screen {
         renderQueue.addAll(objectsCreator.createEntities(world,map,"Environment"));
         renderQueue.addAll(objectsCreator.createDogs(map,world,manager));
 
-        hud = new Hud(batch);
+        hud = new Hud(batch,main,manager);
 
     }
 
@@ -167,11 +178,21 @@ public class GameScreen implements Screen {
 
         //fpsLogger.log();
 
-        acculumator += Math.min(delta,0.25f);
-        while(acculumator > 1/60f)
+        if(gameState == GameState.RUNNING)
         {
-            world.step(1/60f,6,2);
-            acculumator -= 1/60f;
+            acculumator += Math.min(delta,0.25f);
+            while(acculumator > 1/60f)
+            {
+                world.step(1/60f,6,2);
+                acculumator -= 1/60f;
+            }
+            update(delta);
+            hero.update(delta);
+            npc.update(delta);
+        }
+        else if(gameState == GameState.GAME_OVER)
+        {
+            hud.showGameOver();
         }
 
         for(GameEntitiy entity : renderQueue)
@@ -190,10 +211,6 @@ public class GameScreen implements Screen {
                 dog.update(delta);
             }
         }
-
-        update(delta);
-        hero.update(delta);
-        npc.update(delta);
 
         float targetX = hero.getX() + hero.getWidth() / 2;
 
@@ -240,6 +257,8 @@ public class GameScreen implements Screen {
         hud.draw();
 
     }
+
+    boolean isTalkedWithNpc = false;
 
     public void update(float dt)
     {
@@ -297,11 +316,8 @@ public class GameScreen implements Screen {
                 }
                 else if(userPotatoCounter == 3)
                 {
+                    isTalkedWithNpc = true;
                     hero.interactWithTouchedComponent(hud,finalNpcText);
-                }
-                else
-                {
-                    hero.interactWithTouchedComponent(hud,"merjhaba");
                 }
 
                 if(isPotate)
@@ -313,6 +329,10 @@ public class GameScreen implements Screen {
         }
         else
         {
+            if(isTalkedWithNpc)
+            {
+                gameState = GameState.GAME_OVER;
+            }
             if(hud.isDialogVisible() && dialogTimer <= 0)
             {
                 hud.hideDialog();

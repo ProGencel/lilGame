@@ -92,7 +92,7 @@ public class Dog extends GameEntitiy implements Interactable {
     public Dog(World world, AssetManager manager, MapObject mapObject) {
         super(world);
         dogIdleAnimation = manager.get("Dog/dog.png");
-        dogWalkAnimation = manager.get("Dog/dog.png");
+        dogWalkAnimation = manager.get("Dog/dogWalk.png");
 
         direction = Direction.IDLE_RIGHT;
         defineDog(mapObject);
@@ -133,7 +133,7 @@ public class Dog extends GameEntitiy implements Interactable {
             case IDLE_RIGHT, IDLE_LEFT -> currentFrame = dogIdleRightAnimation.getKeyFrame(stateTime, true);
             case WALK_UP -> currentFrame = dogWalkUpAnimation.getKeyFrame(stateTime,true);
             case WALK_DOWN -> currentFrame = dogWalkDownAnimation.getKeyFrame(stateTime,true);
-            case WALK_RIGHT -> currentFrame = dogWalkRightAnimation.getKeyFrame(stateTime,true);
+            case WALK_RIGHT,WALK_LEFT -> currentFrame = dogWalkRightAnimation.getKeyFrame(stateTime,true);
         }
 
         if(currentFrame != null)
@@ -167,6 +167,10 @@ public class Dog extends GameEntitiy implements Interactable {
         }
 
         if(direction.equals(Direction.IDLE_LEFT))
+        {
+            setFlip(true,false);
+        }
+        else if(direction.equals(Direction.WALK_LEFT))
         {
             setFlip(true,false);
         }

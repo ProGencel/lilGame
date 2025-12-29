@@ -36,7 +36,7 @@ public class Hero extends GameEntitiy {
     private float stateTime;
     private Direction previousDirection;
 
-    private Interactable touchedComponent;
+    public Interactable touchedComponent;
 
 
     public Interactable getTouchedComponent() {

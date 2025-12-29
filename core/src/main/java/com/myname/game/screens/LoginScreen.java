@@ -56,7 +56,7 @@ public class LoginScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.input.setInputProcessor(null);
-                main.setScreen(new GameScreen(manager));
+                main.setScreen(new GameScreen(manager,main));
             }
         });
 
