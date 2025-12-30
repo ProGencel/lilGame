@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,6 +28,7 @@ import com.myname.game.entities.StaticEntity;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
 import com.myname.game.tools.ListenerClass;
+import com.myname.game.tools.Sounds;
 import com.myname.game.tools.WorldObjectsCreator;
 import com.myname.game.utils.Constants;
 
@@ -59,7 +61,8 @@ public class GameScreen implements Screen {
     //Entities
     private Hero hero;
     private Npc npc;
-    private Dog dog;
+
+    private Sounds sounds;
 
     private ListenerClass listenerClass;
 
@@ -141,10 +144,14 @@ public class GameScreen implements Screen {
         manager.load("Npc/idle.png",Texture.class);
         manager.load("Dog/dog.png",Texture.class);
         manager.load("Dog/dogWalk.png",Texture.class);
+        manager.load("Sound/forg.mp3", Sound.class);
+        manager.load("Sound/walk.mp3", Sound.class);
+        manager.load("Sound/dialogue.mp3", Sound.class);
         manager.setLoader(TiledMap.class,mapLoader);
         manager.load("World/world.tmx", TiledMap.class);
         manager.finishLoading();
 
+        sounds = new Sounds(manager);
         map = manager.get("World/world.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map,1/Constants.PPM);
@@ -272,6 +279,7 @@ public class GameScreen implements Screen {
         {
             if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             {
+                sounds.playSound("walk");
                 Interactable touchedItem = hero.getTouchedComponent();
                 boolean isPotate = false;
 
