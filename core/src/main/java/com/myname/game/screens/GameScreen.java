@@ -46,6 +46,8 @@ public class GameScreen implements Screen {
     private OrthographicCamera gameCamera;
     private Viewport viewport;
 
+    private boolean isGameOver = false;
+
     //THE WORLD
     private World world;
 
@@ -82,7 +84,6 @@ public class GameScreen implements Screen {
     private boolean isFrogTaken = false;
 
     private float dialogTimer = 1.5f;
-    private Main main;
 
     public enum GameState
     {
@@ -119,9 +120,9 @@ public class GameScreen implements Screen {
             return Float.compare(o2Y,o1Y);
         }
     };
+
     public GameScreen(AssetManager manager, Main main)
     {
-        this.main = main;
         gameState = GameState.RUNNING;
 
         world = new World(new Vector2(0,0),true);
@@ -139,17 +140,25 @@ public class GameScreen implements Screen {
         listenerClass = new ListenerClass();
         world.setContactListener(listenerClass);
 
+        manager.setLoader(TiledMap.class,mapLoader);
+
         manager.load("Hero/idle.png", Texture.class);
         manager.load("Hero/walk.png", Texture.class);
         manager.load("Npc/idle.png",Texture.class);
         manager.load("Dog/dog.png",Texture.class);
         manager.load("Dog/dogWalk.png",Texture.class);
-        manager.load("Sound/forg.mp3", Sound.class);
-        manager.load("Sound/walk.mp3", Sound.class);
-        manager.load("Sound/dialogue.mp3", Sound.class);
-        manager.setLoader(TiledMap.class,mapLoader);
+        manager.load("Sound/forg.wav", Sound.class);
+        manager.load("Sound/walk.wav", Sound.class);
+        manager.load("Sound/dialogue.wav", Sound.class);
+        manager.load("Sound/coin.wav", Sound.class);
+        manager.load("Sound/win.wav", Sound.class);
+        manager.load("Sound/bark.wav", Sound.class);
         manager.load("World/world.tmx", TiledMap.class);
-        manager.finishLoading();
+        try {
+            manager.finishLoading();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         sounds = new Sounds(manager);
         map = manager.get("World/world.tmx");
@@ -196,10 +205,16 @@ public class GameScreen implements Screen {
             update(delta);
             hero.update(delta);
             npc.update(delta);
+            sounds.inputHandler();
         }
         else if(gameState == GameState.GAME_OVER)
         {
             hud.showGameOver();
+            if(isGameOver)
+            {
+                Sounds.playSound("win",0.5f);
+                isGameOver = false;
+            }
         }
 
         for(GameEntitiy entity : renderQueue)
@@ -279,7 +294,6 @@ public class GameScreen implements Screen {
         {
             if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             {
-                sounds.playSound("walk");
                 Interactable touchedItem = hero.getTouchedComponent();
                 boolean isPotate = false;
 
@@ -324,6 +338,7 @@ public class GameScreen implements Screen {
                 }
                 else if(userPotatoCounter == 3)
                 {
+                    isGameOver = true;
                     isTalkedWithNpc = true;
                     hero.interactWithTouchedComponent(hud,finalNpcText);
                 }

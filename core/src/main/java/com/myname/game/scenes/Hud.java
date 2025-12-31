@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myname.game.Main;
 import com.myname.game.screens.GameScreen;
 import com.myname.game.screens.LoginScreen;
+import com.myname.game.tools.Sounds;
 import com.myname.game.utils.Constants;
 
 public class Hud {
@@ -106,6 +107,7 @@ public class Hud {
 
     public void showGameOver()
     {
+        Sounds.stopLoop();
         gameOverTable.setVisible(true);
         Gdx.input.setInputProcessor(stage);
     }

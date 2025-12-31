@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
+import com.myname.game.tools.Sounds;
 import com.myname.game.utils.Constants;
 
 public class Hero extends GameEntitiy {

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
+import com.myname.game.tools.Sounds;
 import com.myname.game.utils.Constants;
 
 
@@ -138,10 +139,13 @@ public class StaticEntity extends GameEntitiy implements Interactable {
                     collected = true;
                     hud.showDialog("Cebe bi tane " + objectName + " attım");
 
+                    Sounds.playSound("coin",0.5f);
+
                     destroyBody = true;
                 }
                 case "frog" -> {
                     collected = true;
+                    Sounds.playSound("forg",0.5f);
                     hud.showDialog("Oo bu kurbağa güzelmiş belki hanımefendi corbasına bunu katar");
 
                     destroyBody = true;

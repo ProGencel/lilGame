@@ -47,12 +47,13 @@ public class CreditScreen extends ScreenAdapter {
         credit[2] = "Frog Designer : Begüm Aysima Yolcu";
         credit[3] = "Fish Designer : Buse Sultan Özmenlikan";
         credit[4] = "Sword Designer : Berat Öncü";
-        credit[5] = "Other assets Designer : Otterisk";
+        credit[5] = "Other Assets Designer : Otterisk";
         credit[6] = "Game Designer : Ahmet Efe Gençel";
         credit[7] = "Developer : Ahmet Efe Gençel";
         credit[8] = "Producer : Ahmet Efe Gençel";
         credit[9] = "UI Implementation and Designer : Ahmet Efe Gençel";
         credit[10] = "System Design : Ahmet Efe Gençel";
+        credit[11] = "Sound Editer : Ahmet Efe Gençel";
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
+import com.myname.game.tools.Sounds;
 import com.myname.game.utils.Constants;
 
 public class Dog extends GameEntitiy implements Interactable {
@@ -192,10 +193,12 @@ public class Dog extends GameEntitiy implements Interactable {
                 body.setLinearDamping(0f);
                 body.setAngularDamping(0f);
                 hud.showDialog("Hav hav sahip !");
+                Sounds.playSound("bark",0.7f);
                 isTame = true;
             }
             else
             {
+                Sounds.playSound("bark",0.5f);
                 hud.showDialog("**şımarır**");
             }
         }

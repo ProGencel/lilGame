@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.myname.game.interfaces.Interactable;
 import com.myname.game.scenes.Hud;
+import com.myname.game.tools.Sounds;
 import com.myname.game.utils.Constants;
 
 
@@ -106,6 +107,7 @@ public class Npc extends GameEntitiy implements Interactable {
     public void interact(Hud hud, String text) {
         if(!hud.isDialogVisible())
         {
+            Sounds.playSound("dialogue",0.15f);
             hud.showDialog(text);
         }
         else
