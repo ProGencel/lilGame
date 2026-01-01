@@ -43,6 +43,9 @@ public class Hud {
     private AssetManager manager;
 
     private Main main;
+
+    private boolean isGameOver = false;
+
     public Hud(SpriteBatch batch, Main main, AssetManager manager)
     {
         this.main = main;
@@ -90,14 +93,22 @@ public class Hud {
             @Override
             public void clicked(InputEvent event, float x ,float y)
             {
-                main.setScreen(new GameScreen(manager,main));
+                if(isGameOver)
+                {
+                    main.setScreen(new GameScreen(manager,main));
+                    isGameOver = false;
+                }
             }
         });
 
         quitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                main.setScreen(new LoginScreen(main,manager));
+                if(isGameOver)
+                {
+                    main.setScreen(new LoginScreen(main,manager));
+                    isGameOver = false;
+                }
             }
         });
 
@@ -108,6 +119,7 @@ public class Hud {
     public void showGameOver()
     {
         Sounds.stopLoop();
+        isGameOver = true;
         gameOverTable.setVisible(true);
         Gdx.input.setInputProcessor(stage);
     }

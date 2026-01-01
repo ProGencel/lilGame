@@ -12,8 +12,22 @@ buildscript {
 }
 plugins {
   id "application"
+  id 'org.beryx.runtime' version '1.13.0'
 }
 apply plugin: 'io.github.fourlastor.construo'
+
+runtime {
+  options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+  modules = ['java.base', 'java.desktop', 'java.scripting', 'java.xml', 'jdk.unsupported']
+  jpackage {
+    imageName = "Potato Chaos"
+    skipInstaller = false
+    if (org.gradle.internal.os.OperatingSystem.current().windows) {
+      installerOptions += ['--win-dir-chooser', '--win-menu', '--win-shortcut']
+      imageOptions += ['--icon', project.file('../assets/icon64.ico').absolutePath]
+    }
+  }
+}
 
 
 import io.github.fourlastor.construo.Target

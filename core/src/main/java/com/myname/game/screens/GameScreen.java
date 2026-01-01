@@ -153,7 +153,7 @@ public class GameScreen implements Screen {
         manager.load("Sound/coin.wav", Sound.class);
         manager.load("Sound/win.wav", Sound.class);
         manager.load("Sound/bark.wav", Sound.class);
-        manager.load("World/world.tmx", TiledMap.class);
+        manager.load("World/World.tmx", TiledMap.class);
         try {
             manager.finishLoading();
         } catch (Exception e) {
@@ -161,7 +161,7 @@ public class GameScreen implements Screen {
         }
 
         sounds = new Sounds(manager);
-        map = manager.get("World/world.tmx");
+        map = manager.get("World/World.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map,1/Constants.PPM);
         debugRenderer = new Box2DDebugRenderer();
@@ -313,7 +313,7 @@ public class GameScreen implements Screen {
                     {
                         hero.interactWithTouchedComponent(hud,"Keşke 16x16 yapılmış bir kılıç olsaydı o zaman belki kullanabilirdim...");
                     }
-                    dialogTimer = 1.5f;
+                    dialogTimer = 2.5f;
                 }
                 else if(touchedItem instanceof Dog)
                 {

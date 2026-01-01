@@ -33,7 +33,7 @@ public class CreditScreen extends ScreenAdapter {
     private Table butonTable;
     private Main main;
 
-    private String[] credit = new String[11];
+    private String[] credit = new String[12];
 
     public CreditScreen(AssetManager manager, Main main) {
         this.manager = manager;
